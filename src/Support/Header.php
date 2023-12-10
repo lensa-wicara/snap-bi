@@ -86,6 +86,33 @@ class Header implements Arrayable
     }
 
     /**
+     * method 'make' is used to create new instance of Header
+     *
+     * @param array $attributes
+     * @return static
+     */
+    public static function make(array $attributes)
+    {
+        return new static(
+            data_get($attributes, 'content-type', 'application/json'),
+            data_get($attributes, 'x-client-key', null),
+            data_get($attributes, 'authorization', null),
+            data_get($attributes, 'authorization-customer', null),
+            data_get($attributes, 'x-timestamp', null),
+            data_get($attributes, 'x-signature', null),
+            data_get($attributes, 'x-origin', null),
+            data_get($attributes, 'x-partner-id', null),
+            data_get($attributes, 'x-external-id', null),
+            data_get($attributes, 'x-ip-address', null),
+            data_get($attributes, 'x-device-id', null),
+            data_get($attributes, 'x-latitude', null),
+            data_get($attributes, 'x-longitude', null),
+            data_get($attributes, 'channel-id', null),
+        );
+    }
+
+
+    /**
      * Get necessary header items for requesting access token
      *
      * @return array

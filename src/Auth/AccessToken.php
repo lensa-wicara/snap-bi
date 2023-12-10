@@ -3,6 +3,7 @@
 namespace LensaWicara\SnapBI\Auth;
 
 use LensaWicara\SnapBI\Http\SnapClient;
+use LensaWicara\SnapBI\Support\Header;
 use LensaWicara\SnapBI\Support\Signature;
 
 class AccessToken
@@ -43,11 +44,7 @@ class AccessToken
      */
     public function getAccessToken()
     {
-        $response = $this->client->withHeaders([
-            'X-TIMESTAMP' => now()->toIso8601String(),
-            'X-CLIENT-KEY' => config('snap-bi.providers.aspi.client_id'),
-            'X-SIGNATURE' => $this->signature->signatureAuth(),
-        ])->post($this->endpoint, [
+        $response = $this->client->withHeaders($this->headers())->post($this->endpoint, [
             'grantType' => 'client_credentials',
         ]);
 
@@ -56,5 +53,15 @@ class AccessToken
         }
 
         return $response->throw();
+    }
+
+    // headers for access token
+    public function headers()
+    {
+        return Header::make([
+            'x-timestamp' => now()->toIso8601String(),
+            'x-client-key' => config('snap-bi.providers.aspi.client_id'),
+            'x-signature' => $this->signature->signatureAuth(),
+        ])->onlyForAccessToken();
     }
 }
