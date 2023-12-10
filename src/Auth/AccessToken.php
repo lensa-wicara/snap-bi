@@ -10,19 +10,11 @@ class AccessToken
 {
     public $endpoint = 'api/v1.0/access-token/b2b';
 
+    public $customerEndpoint = 'api/v1.0/access-token/b2b2c';
+
     protected ?SnapClient $client = null;
 
-    // signature auth
     protected ?Signature $signature = null;
-
-    // Header	Content-Type	Mandatory	String	String represents indicate the media type of the resource (e.g. application/json, application/pdf)
-    // X-TIMESTAMP	Mandatory	String	Client's current local time in yyyy-MM- ddTHH:mm:ssTZD format
-    // X-CLIENT- KEY	Mandatory	String	Client’s client_id (PJP Name) (given at completion registration process )
-    // X-SIGNATURE	Mandatory	String	Non-Repudiation & Integrity checking
-    // X-Signature : dengan algoritma asymmetric signature SHA256withRSA
-    // (Private_Key, stringToSign). stringToSign = client_ID + “|” + X-TIMESTAMP
-    // Body	grantType	Mandatory	String	“client_credentials” : The client can request an access token using only its client credentials (or other supported means of authentication) when the client is requesting access to the protected resources under its control (OAuth 2.0: RFC 6749 & 6750)
-    // additionalInfo	Optional	Object	Additional Information
 
     public function __construct()
     {
@@ -46,6 +38,33 @@ class AccessToken
     {
         $response = $this->client->withHeaders($this->headers())->post($this->endpoint, [
             'grantType' => 'client_credentials',
+        ]);
+
+        if ($response->successful()) {
+            return $response->json();
+        }
+
+        return $response->throw();
+    }
+
+    /**
+     * get customer access token B2B2C
+     *
+     * @param array $body ['authCode', 'refreshToken', 'additionalInfo']
+     * @return mixed|\Illuminate\Http\Client\RequestException
+     */
+    public function getCustomerAccessToken(array $body)
+    {
+        // validate body must have authCode, refreshToken, additionalInfo
+        if (!isset($body['authCode']) || !isset($body['refreshToken']) || !isset($body['additionalInfo'])) {
+            throw new \Exception('Body must have authCode, refreshToken, additionalInfo');
+        }
+
+        $response = $this->client->withHeaders($this->headers())->post($this->customerEndpoint, [
+            'grantType' => 'authorization_code',
+            'authCode' => $body['authCode'],
+            'refreshToken' => $body['refreshToken'],
+            'additionalInfo' => $body['additionalInfo']
         ]);
 
         if ($response->successful()) {
