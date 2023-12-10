@@ -1,3 +1,18 @@
-# vendor
-vendor
-composer.lock
+# ignore .env file
+.env
+
+# ignore .env.local
+.env.local
+# ignore vendor directory
+/vendor
+
+# ignore node_modules directory
+/node_modules
+
+# ignore composer.lock file
+/composer.lock
+
+# ignore yarn.lock file
+/yarn.lock
+
+
