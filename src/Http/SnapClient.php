@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace LensaWicara\SnapBI\Http;
 
@@ -9,8 +9,6 @@ class SnapClient
 {
     /**
      * The http client
-     *
-     * @var PendingRequest|null
      */
     private ?PendingRequest $client;
 
@@ -42,22 +40,23 @@ class SnapClient
     {
         return $this->client->post($endpoint, $data);
     }
-    
+
     /**
      * Magic method to handle dynamic method calls.
      *
-     * @param string $method The name of the method being called.
-     * @param array $arguments The arguments passed to the method.
+     * @param  string  $method The name of the method being called.
+     * @param  array  $arguments The arguments passed to the method.
      * @return mixed The result of the method call.
      */
     public function __call($method, $arguments)
     {
-        if (!$this->client) {
+        if (! $this->client) {
             $this->client = Http::acceptJson();
         }
 
-        if ('withHeaders' === $method) {
+        if ($method === 'withHeaders') {
             $this->client->withHeaders(...$arguments);
+
             return $this;
         }
 
@@ -74,7 +73,7 @@ class SnapClient
         }
 
         $this->client->$method(...$arguments);
-        
+
         return $this;
     }
 }

@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace LensaWicara\SnapBI\Support;
 
@@ -8,21 +8,6 @@ class Header implements Arrayable
 {
     /**
      * Header constructor.
-     *
-     * @param string|null $contentType
-     * @param string|null $clientKey
-     * @param string|null $authorization
-     * @param string|null $authorizationCustomer
-     * @param string|null $timestamp
-     * @param string|null $signature
-     * @param string|null $origin
-     * @param string|null $partnerId
-     * @param string|null $externalId
-     * @param string|null $ipAddress
-     * @param string|null $deviceId
-     * @param string|null $latitude
-     * @param string|null $longitude
-     * @param string|null $channelId
      */
     public function __construct(
         protected ?string $contentType = 'application/json',
@@ -40,7 +25,7 @@ class Header implements Arrayable
         protected ?string $longitude = null,
         protected ?string $channelId = null
     ) {
-        // 
+        //
     }
 
     /**
@@ -79,7 +64,6 @@ class Header implements Arrayable
     /**
      * Get only several header item
      *
-     * @param array $keys
      *
      * @return array
      */
@@ -100,7 +84,7 @@ class Header implements Arrayable
 
         return $attributes;
     }
-    
+
     /**
      * Get necessary header items for requesting access token
      *

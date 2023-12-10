@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace LensaWicara\SnapBI\Support;
 
@@ -53,4 +53,3 @@ class Signature
         return $response->throw();
     }
 }
-

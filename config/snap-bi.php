@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 return [
     'providers' => [
@@ -11,7 +11,7 @@ return [
             'private_key' => env('ASPI_PRIVATE_KEY'),
             'base_url' => env('ASPI_BASE_URL', 'https://apidevportal.aspi-indonesia.or.id:44310'),
         ],
-    
+
         // ...others e.g: BCA, BNI, Mandiri, etc
-    ]
+    ],
 ];

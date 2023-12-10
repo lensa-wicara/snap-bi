@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace LensaWicara\SnapBI;
 
@@ -19,6 +19,6 @@ class ServiceProvider extends BaseServiceProvider
     public function register()
     {
         // merge config
-        $this->mergeConfigFrom(__DIR__ . '/../config/snap-bi.php', 'snap-bi');
+        $this->mergeConfigFrom(__DIR__.'/../config/snap-bi.php', 'snap-bi');
     }
 }

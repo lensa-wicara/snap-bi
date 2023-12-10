@@ -5,7 +5,7 @@ namespace LensaWicara\SnapBI\Auth;
 use LensaWicara\SnapBI\Http\SnapClient;
 use LensaWicara\SnapBI\Support\Signature;
 
-class AccessToken 
+class AccessToken
 {
     public $endpoint = 'api/v1.0/access-token/b2b';
 
