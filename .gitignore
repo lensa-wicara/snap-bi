@@ -21,3 +21,4 @@
 
 # ignore file .key on test/keys/ directory
 /tests/keys/*.key
+/tests/*/*.key

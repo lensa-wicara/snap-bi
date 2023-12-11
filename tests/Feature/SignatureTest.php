@@ -11,7 +11,7 @@ use PHPUnit\Framework\Attributes\Test;
 
 class SignatureTest extends TestCase
 {
-    const KEYS = __DIR__.'/keys';
+    const KEYS = __DIR__.'/../keys';
 
     const PUBLIC_KEY = self::KEYS.'/snap_test_public.key';
 
