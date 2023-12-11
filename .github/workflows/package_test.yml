@@ -1,0 +1,29 @@
+name: Package Tests
+
+on: [push]
+jobs:
+  run_tests:
+    name: Run PHPUnit Tests
+    runs-on: ubuntu-latest
+
+    env:
+      ASPI_CLIENT_ID: ${{ secrets.ASPI_CLIENT_ID }}
+      ASPI_CLIENT_SECRET: ${{ secrets.ASPI_CLIENT_SECRET }}
+      ASPI_PUBLIC_KEY: ${{ secrets.ASPI_PUBLIC_KEY }}
+      ASPI_PRIVATE_KEY: ${{ secrets.ASPI_PRIVATE_KEY }}
+      ASPI_BASE_URI: ${{ secrets.ASPI_BASE_URI }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.2"
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-suggest --no-interaction --optimize-autoloader
+
+      - name: Run PHPUnit Tests
+        run: composer test
