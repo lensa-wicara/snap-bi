@@ -5,8 +5,14 @@ namespace LensaWicara\Tests;
 use LensaWicara\SnapBI\ServiceProvider;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 
-class TestCase extends BaseTestCase
+abstract class TestCase extends BaseTestCase
 {
+    /**
+     * Get package providers.
+     *
+     * @param  \Illuminate\Foundation\Application  $app
+     * @return array|string[]
+     */
     protected function getPackageProviders($app)
     {
         return [

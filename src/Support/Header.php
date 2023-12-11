@@ -88,7 +88,6 @@ class Header implements Arrayable
     /**
      * method 'make' is used to create new instance of Header
      *
-     * @param array $attributes
      * @return static
      */
     public static function make(array $attributes)
@@ -110,7 +109,6 @@ class Header implements Arrayable
             data_get($attributes, 'channel-id', null),
         );
     }
-
 
     /**
      * Get necessary header items for requesting access token

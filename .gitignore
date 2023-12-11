@@ -3,6 +3,10 @@
 
 # ignore .env.local
 .env.local
+
+# ignore phpunit
+.phpunit.result.cache
+
 # ignore vendor directory
 /vendor
 
@@ -15,3 +19,5 @@
 # ignore yarn.lock file
 /yarn.lock
 
+# ignore file .key on test/keys/ directory
+/tests/keys/*.key

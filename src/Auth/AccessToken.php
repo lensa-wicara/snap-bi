@@ -50,13 +50,13 @@ class AccessToken
     /**
      * get customer access token B2B2C
      *
-     * @param array $body ['authCode', 'refreshToken', 'additionalInfo']
+     * @param  array  $body ['authCode', 'refreshToken', 'additionalInfo']
      * @return mixed|\Illuminate\Http\Client\RequestException
      */
     public function getCustomerAccessToken(array $body)
     {
         // validate body must have authCode, refreshToken, additionalInfo
-        if (!isset($body['authCode']) || !isset($body['refreshToken']) || !isset($body['additionalInfo'])) {
+        if (! isset($body['authCode']) || ! isset($body['refreshToken']) || ! isset($body['additionalInfo'])) {
             throw new \Exception('Body must have authCode, refreshToken, additionalInfo');
         }
 
@@ -64,7 +64,7 @@ class AccessToken
             'grantType' => 'authorization_code',
             'authCode' => $body['authCode'],
             'refreshToken' => $body['refreshToken'],
-            'additionalInfo' => $body['additionalInfo']
+            'additionalInfo' => $body['additionalInfo'],
         ]);
 
         if ($response->successful()) {
