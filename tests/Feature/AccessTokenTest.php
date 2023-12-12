@@ -5,6 +5,7 @@ namespace LensaWicara\Tests\Feature;
 use Illuminate\Support\Facades\Http;
 use LensaWicara\SnapBI\Auth\AccessableToken;
 use LensaWicara\SnapBI\Auth\AccessToken;
+use LensaWicara\SnapBI\Support\Signature;
 use LensaWicara\Tests\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 
@@ -88,5 +89,36 @@ class AccessTokenTest extends TestCase
         $accessToken = (string) AccessableToken::get('test');
 
         $this->assertIsString($accessToken);
+    }
+
+    #[Test]
+    // can generate signature auth
+    public function can_generate_signature_auth()
+    {
+        $signature = new Signature();
+
+        $response = $signature->signatureAuth();
+
+        $this->assertIsString($response);
+    }
+
+    #[Test]
+    // can generate signature service
+    public function can_generate_signature_service()
+    {
+        $signature = new Signature();
+
+        $response = $signature->signatureService(
+            'POST',
+            'https://api.snapbi.com/v1/endpoint',
+            [
+                "accountNo" => "1234567890",
+                "cliendId" => "1234567890",
+                "clientName" => "John Doe",
+                "reqMsgId" => "1234567890",
+            ],
+        );
+
+        $this->assertIsString($response);
     }
 }

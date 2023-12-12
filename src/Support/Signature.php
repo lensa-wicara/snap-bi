@@ -3,6 +3,7 @@
 namespace LensaWicara\SnapBI\Support;
 
 use Illuminate\Http\Client\PendingRequest;
+use LensaWicara\SnapBI\Auth\AccessableToken;
 use LensaWicara\SnapBI\Http\SnapClient;
 use LensaWicara\SnapBI\Signature\AsymmetricPayload;
 use LensaWicara\SnapBI\Signature\SymmetricPayload;
@@ -15,6 +16,13 @@ class Signature
      * @var string
      */
     public $endpoint = 'api/v1.0/utilities/signature-auth';
+
+    /**
+     * The endpoint url for signature service
+     * 
+     * @var string
+     */
+    public $serviceEndpoint = 'api/v1.0/utilities/signature-service';
 
     /**
      * The http client
@@ -141,6 +149,31 @@ class Signature
             ...$withHeaders,
             ...$headers,
         ]))->post($this->endpoint);
+
+        if ($response->successful()) {
+            return $response->json()['signature'];
+        }
+
+        return $response->throw();
+    }
+
+    /**
+     * generate signature service
+     */
+    public function signatureService($httpMethod = 'POST', $endpointUrl, $payload = '', $headers = [])
+    {
+        $withHeaders = [
+            'X-TIMESTAMP' => now()->toIso8601String(),
+            'X-CLIENT-SECRET' => config('snap-bi.providers.aspi.client_secret'),
+            'HttpMethod' => $httpMethod,
+            'EndpoinUrl' => $endpointUrl,
+            'AccessToken' => (string) AccessableToken::get('test'),
+        ];
+
+        $response = $this->client->withHeaders(array_merge([
+            ...$withHeaders,
+            ...$headers,
+        ]))->post($this->serviceEndpoint, $payload);
 
         if ($response->successful()) {
             return $response->json()['signature'];
