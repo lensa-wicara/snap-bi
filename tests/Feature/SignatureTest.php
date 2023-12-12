@@ -4,6 +4,7 @@ namespace LensaWicara\SnapBI;
 
 use Illuminate\Contracts\Config\Repository;
 use LensaWicara\SnapBI\Signature\AsymmetricPayload;
+use LensaWicara\SnapBI\Signature\SymmetricPayload;
 use LensaWicara\SnapBI\Support\Signature;
 use LensaWicara\Tests\TestCase;
 use phpseclib3\Crypt\RSA;
@@ -88,6 +89,59 @@ class SignatureTest extends TestCase
 
         $this->assertIsString($sign);
         $this->assertIsInt($verify);
+        $this->assertEquals(1, $verify);
+    }
+
+    #[Test]
+    // can generate symmetric signature
+    public function can_generate_symmetric_signature()
+    {
+        $signature = new Signature();
+
+        $symmetricPayload = new SymmetricPayload(
+            'POST',
+            'https://api.snapbi.com/v1/endpoint',
+            config('snap-bi.providers.aspi.client_id'),
+            now()->toIso8601String(),
+            'payload',
+        );
+
+        $response = $signature->symmetric(
+            $symmetricPayload,
+            config('snap-bi.providers.aspi.private_key'),
+        );
+
+        // assert string
+        $this->assertIsString($response);
+    }
+
+    #[Test]
+    // can verify symmetric signature
+    public function can_verify_symmetric_signature()
+    {
+        $signature = new Signature();
+
+        $symmetricPayload = new SymmetricPayload(
+            'POST',
+            'https://api.snapbi.com/v1/endpoint',
+            config('snap-bi.providers.aspi.client_id'),
+            now()->toIso8601String(),
+            'payload',
+        );
+
+        $sign = $signature->symmetric(
+            $symmetricPayload,
+            config('snap-bi.providers.aspi.private_key'),
+        );
+
+        $verify = $signature->symmetricVerify(
+            $symmetricPayload,
+            config('snap-bi.providers.aspi.private_key'),
+            $sign,
+        );
+
+        $this->assertIsString($sign);
+        $this->assertIsBool($verify);
         $this->assertEquals(1, $verify);
     }
 }

@@ -5,9 +5,15 @@ namespace LensaWicara\SnapBI\Support;
 use Illuminate\Http\Client\PendingRequest;
 use LensaWicara\SnapBI\Http\SnapClient;
 use LensaWicara\SnapBI\Signature\AsymmetricPayload;
+use LensaWicara\SnapBI\Signature\SymmetricPayload;
 
 class Signature
 {
+    /**
+     * The endpoint url for signature auth
+     *
+     * @var string
+     */
     public $endpoint = 'api/v1.0/utilities/signature-auth';
 
     /**
@@ -24,6 +30,9 @@ class Signature
      */
     protected $throwError = true;
 
+    /**
+     * Create new instance
+     */
     public function __construct()
     {
         $this->client = new SnapClient();
@@ -69,6 +78,46 @@ class Signature
         $verify = openssl_verify((string) $payload, base64_decode($signature), $asymmetricKey, OPENSSL_ALGO_SHA256);
 
         if ($verify === -1) {
+            throw new \Exception('Failed to verify signature.');
+        }
+
+        return $verify;
+    }
+
+    /**
+     * generate symmetric signature 
+     * HMAC_SHA512 (clientSecret, stringToSign) dengan formula stringToSign = HTTPMethod +”:“+ EndpointUrl +":"+ AccessToken +":“+ Lowercase(HexEncode(SHA-256(minify(RequestBody))))+ ":“ + TimeStamp
+     * 
+     * @param  SymmetricPayload  $payload
+     * @param  string  $clientSecret
+     * @return string
+     */
+    public function symmetric(SymmetricPayload $payload, $clientSecret)
+    {
+        $stringToSign = (string) $payload;
+
+        $signature = hash_hmac('sha512', $stringToSign, $clientSecret, true);
+
+        if (! $signature) {
+            throw new \Exception('Failed to generate signature.');
+        }
+
+        return base64_encode($signature);
+    }
+
+    /**
+     * verify symmetric signature
+     *
+     * @param  SymmetricPayload  $payload
+     * @param  string  $clientSecret
+     * @param  string  $signature
+     * @return bool
+     */
+    public function symmetricVerify(SymmetricPayload $payload, $clientSecret, $signature)
+    {
+        $verify = hash_equals($signature, static::symmetric($payload, $clientSecret));
+
+        if (! $verify) {
             throw new \Exception('Failed to verify signature.');
         }
 
@@ -129,22 +178,16 @@ class Signature
     }
 
     /**
-     * get aspi private key
+     * make asymmetric and symmetric signature to be called statically
      */
-    public function getAspiPrivateKey()
+    public static function __callStatic($method, $args)
     {
-        $key = config('snap-bi.providers.aspi.private_key');
+        // only allow asymmetric and symmetric method
+        // and the verify method
+        if (! in_array($method, ['asymmetric', 'symmetric', 'asymmetricVerify', 'symmetricVerify'])) {
+            throw new \Exception('Method not found.');
+        }
 
-        return $key;
-    }
-
-    /**
-     * get aspi public key
-     */
-    public function getAspiPublicKey()
-    {
-        $key = config('snap-bi.providers.aspi.public_key');
-
-        return $key;
+        return (new static)->{$method}(...$args);
     }
 }
