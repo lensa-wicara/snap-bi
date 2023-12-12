@@ -3,8 +3,10 @@
 namespace LensaWicara\Tests\Feature;
 
 use Illuminate\Support\Facades\Http;
+use LensaWicara\SnapBI\Auth\AccessableToken;
 use LensaWicara\SnapBI\Auth\AccessToken;
 use LensaWicara\Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class AccessTokenTest extends TestCase
 {
@@ -46,6 +48,7 @@ class AccessTokenTest extends TestCase
         ]);
     }
 
+    #[Test]
     // can get access token
     public function test_can_get_access_token()
     {
@@ -58,6 +61,7 @@ class AccessTokenTest extends TestCase
         $this->assertArrayHasKey('expiresIn', $auth);
     }
 
+    #[Test]
     // can get customer access token
     public function test_can_get_customer_access_token()
     {
@@ -75,5 +79,14 @@ class AccessTokenTest extends TestCase
         $this->assertArrayHasKey('refreshToken', $auth);
         $this->assertArrayHasKey('refreshTokenExpiryTime', $auth);
         $this->assertArrayHasKey('additionalInfo', $auth);
+    }
+
+    #[Test]
+    // can get access token from cache
+    public function test_can_get_access_token_from_cache()
+    {
+        $accessToken = (string) AccessableToken::get('test');
+
+        $this->assertIsString($accessToken);
     }
 }

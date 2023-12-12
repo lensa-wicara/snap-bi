@@ -5,6 +5,7 @@ namespace LensaWicara\SnapBI\Auth;
 use LensaWicara\SnapBI\Http\SnapClient;
 use LensaWicara\SnapBI\Support\Header;
 use LensaWicara\SnapBI\Support\Signature;
+use LensaWicara\SnapBI\Auth\AccessableToken as Token;
 
 class AccessToken
 {
@@ -41,6 +42,7 @@ class AccessToken
         ]);
 
         if ($response->successful()) {
+            Token::put('test', $response->json());
             return $response->json();
         }
 
