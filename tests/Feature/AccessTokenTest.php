@@ -23,30 +23,30 @@ class AccessTokenTest extends TestCase
         // set config to use test keys
         // fake http client
 
-        Http::fake([
-            $baseUrl.'/api/v1.0/utilities/signature-auth' => Http::response([
-                'signature' => 'fnjKJJfejlfuhfsnamef',
-            ], 200),
+        // Http::fake([
+        //     $baseUrl.'/api/v1.0/utilities/signature-auth' => Http::response([
+        //         'signature' => 'fnjKJJfejlfuhfsnamef',
+        //     ], 200),
 
-            $baseUrl.'/api/v1.0/access-token/b2b' => Http::response([
-                'responseCode' => '2007300',
-                'responseMessage' => 'Successful',
-                'accessToken' => 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzMmM5OWZjZi05NTczLTQ1MjQtYWY0OS1kZWI4Y',
-                'tokenType' => 'Bearer',
-                'expiresIn' => '900',
-            ], 200),
+        //     $baseUrl.'/api/v1.0/access-token/b2b' => Http::response([
+        //         'responseCode' => '2007300',
+        //         'responseMessage' => 'Successful',
+        //         'accessToken' => 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzMmM5OWZjZi05NTczLTQ1MjQtYWY0OS1kZWI4Y',
+        //         'tokenType' => 'Bearer',
+        //         'expiresIn' => '900',
+        //     ], 200),
 
-            $baseUrl.'/api/v1.0/access-token/b2b2c' => Http::response([
-                'responseCode' => '2007400',
-                'responseMessage' => 'Successful',
-                'accessToken' => 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzNGVhMmYxMy05M2ZjLTQyZGUtODV',
-                'tokenType' => 'Bearer',
-                'accessTokenExpiryTime' => '2023-12-10T20:05:05+07:00',
-                'refreshToken' => 'fb902845-727b-4ba1-8bde-245f8dd1c2c9',
-                'refreshTokenExpiryTime' => '2023-12-25T19:50:05+07:00',
-                'additionalInfo' => [],
-            ], 200),
-        ]);
+        //     $baseUrl.'/api/v1.0/access-token/b2b2c' => Http::response([
+        //         'responseCode' => '2007400',
+        //         'responseMessage' => 'Successful',
+        //         'accessToken' => 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzNGVhMmYxMy05M2ZjLTQyZGUtODV',
+        //         'tokenType' => 'Bearer',
+        //         'accessTokenExpiryTime' => '2023-12-10T20:05:05+07:00',
+        //         'refreshToken' => 'fb902845-727b-4ba1-8bde-245f8dd1c2c9',
+        //         'refreshTokenExpiryTime' => '2023-12-25T19:50:05+07:00',
+        //         'additionalInfo' => [],
+        //     ], 200),
+        // ]);
     }
 
     #[Test]
@@ -117,6 +117,7 @@ class AccessTokenTest extends TestCase
                 "clientName" => "John Doe",
                 "reqMsgId" => "1234567890",
             ],
+            (string) AccessableToken::get('test')
         );
 
         $this->assertIsString($response);

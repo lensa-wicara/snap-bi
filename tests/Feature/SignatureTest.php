@@ -26,7 +26,7 @@ class SignatureTest extends TestCase
         parent::setUp();
 
         /** @var \phpseclib3\Crypt\RSA\PrivateKey $key */
-        $rsa = RSA::createKey(4096);
+        $rsa = RSA::createKey();
 
         // if file does not exist, create it
         if (! file_exists(self::KEYS)) {

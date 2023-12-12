@@ -2,6 +2,7 @@
 
 namespace LensaWicara\Tests;
 
+use Illuminate\Support\Facades\Cache;
 use LensaWicara\SnapBI\ServiceProvider;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 

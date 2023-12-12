@@ -5,13 +5,14 @@ namespace LensaWicara\SnapBI\Services;
 use LensaWicara\SnapBI\Auth\AccessableToken;
 use LensaWicara\SnapBI\Auth\AccessToken;
 use LensaWicara\SnapBI\Http\SnapClient;
+use LensaWicara\SnapBI\Signature\SymmetricPayload;
 use LensaWicara\SnapBI\Support\Header;
 use LensaWicara\SnapBI\Support\Signature;
 use LensaWicara\SnapBI\Support\Timestamp;
 
 class VirtualAccount
 {
-    public string $endpoint = 'api/v1.0/transfer-va/inquiry';
+    public string $endpoint = '/api/v1.0/transfer-va/inquiry';
 
     protected ?SnapClient $client = null;
 
@@ -22,20 +23,20 @@ class VirtualAccount
     protected array $body = [];
 
     // timestamp
-    protected string $timestamp;
+    protected Timestamp $timestamp;
 
     public function __construct()
     {
+        $this->timestamp = new Timestamp();
         $this->client = new SnapClient();
         $this->signature = new Signature();
-        $this->timestamp = (string) new Timestamp();
     }
 
     // withBody
     public function withBody(array $body)
     {
         $this->body = $body;
-
+        
         return $this;
     }
 
@@ -61,11 +62,11 @@ class VirtualAccount
     {
         return Header::make([
             'x-client-key' => config('snap-bi.providers.aspi.client_id'),
-            'x-timestamp' => $this->timestamp,
-            'authorization' => 'Bearer '.$this->authorization(),
-            'authorization-customer' => 'Bearer '.$this->authorizationCustomer(),
+            'x-timestamp' => (string) $this->timestamp,
+            'authorization' => 'Bearer '. static::authorization(),
+            'authorization-customer' => 'Bearer '. static::authorizationCustomer(),
             'x-signature' => $this->signatureService(),
-            'x-origin' => url('/'),
+            'x-origin' => request()->getHost(),
             'x-partner-id' => config('snap-bi.providers.aspi.client_id'),
             'x-external-id' => '41807553358950093184162180797837',
             'x-ip-address' => request()->ip(),
@@ -79,15 +80,15 @@ class VirtualAccount
     /**
      * authorization
      */
-    protected function authorization()
+    protected static function authorization()
     {
-        return  (string) AccessableToken::get('test');
+        return (string) AccessableToken::get('test');
     }
 
     /**
      * authorization customer
      */
-    protected function authorizationCustomer()
+    protected static function authorizationCustomer()
     {
         $auth = (new AccessToken)->getCustomerAccessToken([
             'authCode' => 'a6975f82-d00a-4ddc-9633-087fefb6275e',
@@ -103,11 +104,16 @@ class VirtualAccount
      */
     protected function signatureService()
     {
+        $baseUrl = config('snap-bi.providers.aspi.base_url');
+
         return $this->signature->signatureService(
             'POST',
-            $this->endpoint,
+            $baseUrl.$this->endpoint,
             $this->body,
+            static::authorization(),
+            [
+                'X-TIMESTAMP' => (string) $this->timestamp,
+            ]
         );
     }
-
 }

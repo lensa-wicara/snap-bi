@@ -160,14 +160,14 @@ class Signature
     /**
      * generate signature service
      */
-    public function signatureService($httpMethod = 'POST', $endpointUrl, $payload = '', $headers = [])
+    public function signatureService($httpMethod = 'POST', $endpointUrl, $payload = '', $accessToken, $headers = [])
     {
         $withHeaders = [
             'X-TIMESTAMP' => now()->toIso8601String(),
             'X-CLIENT-SECRET' => config('snap-bi.providers.aspi.client_secret'),
             'HttpMethod' => $httpMethod,
             'EndpoinUrl' => $endpointUrl,
-            'AccessToken' => (string) AccessableToken::get('test'),
+            'AccessToken' => $accessToken,
         ];
 
         $response = $this->client->withHeaders(array_merge([
