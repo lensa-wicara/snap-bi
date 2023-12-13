@@ -501,4 +501,114 @@ class VirtualAccountTest extends TestCase
         $this->assertArrayHasKey('freeTexts', $response['virtualAccountData']);
         $this->assertArrayHasKey('additionalInfo', $response);
     }
+
+    #[Test]
+    // can get virtual account report
+    public function test_can_get_virtual_account_report()
+    {
+        $body = [
+            "partnerServiceId" => "088899",
+            "startDate" => "2020-12-31",
+            "startTime" => "14:56:11+07:00",
+            "endDate" => "2021-12-31",
+            "endTime" => "14:56:11+07:00",
+            "additionalInfo" => []
+        ];
+
+        $va = new VirtualAccount;
+
+        $response = $va->using('report')->withBody($body)->send();
+
+        dump($response);
+
+        // $response = [
+        //     "responseCode" => "2003500",
+        //     "responseMessage" => "Successful",
+        //     "virtualAccountdata" => [
+        //         [
+        //             "paymentFlagReason" => [
+        //                 "english" => "Success",
+        //                 "indonesia" => "Sukses"
+        //             ],
+        //             "partnerServiceId" => "088899",
+        //             "customerNo" => "1234567890123456789",
+        //             "virtualAccountNo" => "0008889912345678901234567890",
+        //             "virtualAccountName" => "Jokul Doe",
+        //             "virtualAccountEmail" => "john@email.com",
+        //             "virtualAccountPhone" => "6281828384858",
+        //             "sourceAccountNo" => "1234567890",
+        //             "sourceAccountType" => "s",
+        //             "trxId" => "abcdefgh1234",
+        //             "inquiryRequestId" => "abcdef-123456-abcdef",
+        //             "paymentRequestId" => "abcdef-123456-abcdef",
+        //             "paidAmount" => [
+        //                 "value" => "55000",
+        //                 "currency" => "IDR"
+        //             ],
+        //             "paidBills" => "100101",
+        //             "totalAmount" => [
+        //                 "value" => "88000",
+        //                 "currency" => "IDR"
+        //             ],
+        //             "trxDateTime" => "20201231T235959Z",
+        //             "referenceNo" => "123456789012345",
+        //             "journalNum" => "123456",
+        //             "paymentType" => "1",
+        //             "flagAdvise" => "Y",
+        //             "billDetails" => [
+        //                 [
+        //                     "billCode" => "01",
+        //                     "billNo" => "123456789012345678",
+        //                     "billName" => "Bill A for Jan",
+        //                     "billShortName" => "Bill A",
+        //                     "billDescription" => [
+        //                         "english" => "Maintenance",
+        //                         "indonesia" => "Pemeliharaan"
+        //                     ],
+        //                     "billSubCompany" => "00001",
+        //                     "billAmount" => [
+        //                         "value" => "50000",
+        //                         "currency" => "IDR"
+        //                     ],
+        //                     "additionalInfo" => [],
+        //                     "status" => "00",
+        //                     "reason" => [
+        //                         "english" => "Success",
+        //                         "indonesia" => "Sukses"
+        //                     ]
+        //                 ]
+        //             ],
+        //             "freeTexts" => [
+        //                 [
+        //                     "english" => "Free text",
+        //                     "indonesia" => "Tulisan bebas"
+        //                 ]
+        //             ],
+        //             "additionalInfo" => []
+        //         ]
+        //     ]
+        // ];
+
+        $this->assertIsArray($response);
+        $this->assertArrayHasKey('responseCode', $response);
+        $this->assertArrayHasKey('responseMessage', $response);
+        $this->assertArrayHasKey('virtualAccountdata', $response);
+        $this->assertArrayHasKey('paymentFlagReason', $response['virtualAccountdata'][0]);
+        $this->assertArrayHasKey('partnerServiceId', $response['virtualAccountdata'][0]);
+        $this->assertArrayHasKey('customerNo', $response['virtualAccountdata'][0]);
+        $this->assertArrayHasKey('virtualAccountNo', $response['virtualAccountdata'][0]);
+        $this->assertArrayHasKey('virtualAccountName', $response['virtualAccountdata'][0]);
+        $this->assertArrayHasKey('virtualAccountEmail', $response['virtualAccountdata'][0]);
+        $this->assertArrayHasKey('virtualAccountPhone', $response['virtualAccountdata'][0]);
+        $this->assertArrayHasKey('billDetails', $response['virtualAccountdata'][0]);
+        $this->assertArrayHasKey('billCode', $response['virtualAccountdata'][0]['billDetails'][0]);
+        $this->assertArrayHasKey('billNo', $response['virtualAccountdata'][0]['billDetails'][0]);
+        $this->assertArrayHasKey('billName', $response['virtualAccountdata'][0]['billDetails'][0]);
+        $this->assertArrayHasKey('billShortName', $response['virtualAccountdata'][0]['billDetails'][0]);
+        $this->assertArrayHasKey('billDescription', $response['virtualAccountdata'][0]['billDetails'][0]);
+        $this->assertArrayHasKey('billSubCompany', $response['virtualAccountdata'][0]['billDetails'][0]);
+        $this->assertArrayHasKey('billAmount', $response['virtualAccountdata'][0]['billDetails'][0]);
+        $this->assertArrayHasKey('additionalInfo', $response['virtualAccountdata'][0]['billDetails'][0]);
+        $this->assertArrayHasKey('status', $response['virtualAccountdata'][0]['billDetails'][0]);
+    }
 }
