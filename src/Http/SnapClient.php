@@ -31,14 +31,24 @@ class SnapClient
         return $this;
     }
 
-    public function get(string $endpoint)
+    public function get(string $endpoint, array $query = [])
     {
-        return $this->client->get($endpoint);
+        return $this->client->get($endpoint, $query);
     }
 
     public function post(string $endpoint, array $data = [])
     {
         return $this->client->post($endpoint, $data);
+    }
+
+    public function put(string $endpoint, array $data = [])
+    {
+        return $this->client->put($endpoint, $data);
+    }
+
+    public function delete(string $endpoint, array $data = [])
+    {
+        return $this->client->delete($endpoint, $data);
     }
 
     /**

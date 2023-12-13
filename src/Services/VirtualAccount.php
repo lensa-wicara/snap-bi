@@ -12,6 +12,9 @@ use LensaWicara\SnapBI\Support\Timestamp;
 
 class VirtualAccount
 {
+    // using
+    public ?string $using = null;
+
     // endpoint
     public ?string $endpoint = null;
 
@@ -20,8 +23,25 @@ class VirtualAccount
         'inquiry' => '/api/v1.0/transfer-va/inquiry',
         'inquiry-va' => '/api/v1.0/transfer-va/inquiry-va',
         'create-va' => '/api/v1.0/transfer-va/create-va',
+        'update-va' => '/api/v1.0/transfer-va/update-va',
+        'delete-va' => '/api/v1.0/transfer-va/delete-va',
         'payment' => '/api/v1.0/transfer-va/payment',
+        'status' => '/api/v1.0/transfer-va/status',
         'report' => '/api/v1.0/transfer-va/report',
+        'update-status' => '/api/v1.0/transfer-va/update-status',
+    ];
+
+    // endpoints method
+    public array $endpointsMethod = [
+        'inquiry' => 'POST',
+        'inquiry-va' => 'POST',
+        'create-va' => 'POST',
+        'update-va' => 'PUT',
+        'delete-va' => 'DELETE',
+        'payment' => 'POST',
+        'status' => 'POST',
+        'report' => 'POST',
+        'update-status' => 'PUT',
     ];
 
     protected ?SnapClient $client = null;
@@ -66,6 +86,7 @@ class VirtualAccount
      */
     public function using(string $endpoint): self
     {
+        $this->using = $endpoint;
         $this->endpoint = $this->endpoints[$endpoint];
         
         return $this;
@@ -84,8 +105,11 @@ class VirtualAccount
             throw new \Exception('Endpoint has not been set. Please use `using` method to set endpoint');
         }
 
+        // method
+        $method = strtolower($this->endpointsMethod[$this->using]);
+
         $response = $this->client->withHeaders($this->headers())
-                        ->post($this->endpoint, $this->body);
+                        ->$method($this->endpoint, $this->body);
 
         if ($response->successful()) {
             return $response->json();
