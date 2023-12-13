@@ -3,7 +3,6 @@
 namespace LensaWicara\SnapBI\Support;
 
 use Illuminate\Http\Client\PendingRequest;
-use LensaWicara\SnapBI\Auth\AccessableToken;
 use LensaWicara\SnapBI\Http\SnapClient;
 use LensaWicara\SnapBI\Signature\AsymmetricPayload;
 use LensaWicara\SnapBI\Signature\SymmetricPayload;
@@ -19,7 +18,7 @@ class Signature
 
     /**
      * The endpoint url for signature service
-     * 
+     *
      * @var string
      */
     public $serviceEndpoint = 'api/v1.0/utilities/signature-service';
@@ -93,10 +92,9 @@ class Signature
     }
 
     /**
-     * generate symmetric signature 
+     * generate symmetric signature
      * HMAC_SHA512 (clientSecret, stringToSign) dengan formula stringToSign = HTTPMethod +”:“+ EndpointUrl +":"+ AccessToken +":“+ Lowercase(HexEncode(SHA-256(minify(RequestBody))))+ ":“ + TimeStamp
-     * 
-     * @param  SymmetricPayload  $payload
+     *
      * @param  string  $clientSecret
      * @return string
      */
@@ -116,7 +114,6 @@ class Signature
     /**
      * verify symmetric signature
      *
-     * @param  SymmetricPayload  $payload
      * @param  string  $clientSecret
      * @param  string  $signature
      * @return bool
@@ -160,7 +157,7 @@ class Signature
     /**
      * generate signature service
      */
-    public function signatureService($httpMethod = 'POST', $endpointUrl, $payload = '', $accessToken, $headers = [])
+    public function signatureService($httpMethod, $endpointUrl, $payload, $accessToken, $headers = [])
     {
         $withHeaders = [
             'X-TIMESTAMP' => now()->toIso8601String(),

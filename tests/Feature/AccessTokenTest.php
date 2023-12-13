@@ -112,10 +112,10 @@ class AccessTokenTest extends TestCase
             'POST',
             'https://api.snapbi.com/v1/endpoint',
             [
-                "accountNo" => "1234567890",
-                "cliendId" => "1234567890",
-                "clientName" => "John Doe",
-                "reqMsgId" => "1234567890",
+                'accountNo' => '1234567890',
+                'cliendId' => '1234567890',
+                'clientName' => 'John Doe',
+                'reqMsgId' => '1234567890',
             ],
             (string) AccessableToken::get('test')
         );

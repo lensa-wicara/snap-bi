@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace LensaWicara\SnapBI\Support;
 
@@ -6,8 +6,6 @@ class Timestamp
 {
     /**
      * timestamp
-     *
-     * @var string
      */
     protected string $timestamp;
 
@@ -16,10 +14,11 @@ class Timestamp
      *
      * @return string
      */
-    public function __construct($timestamp = null) {
+    public function __construct($timestamp = null)
+    {
         $this->timestamp = $timestamp ?? now()->toIso8601String();
     }
-    
+
     // to string
     public function __toString()
     {

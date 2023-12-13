@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace LensaWicara\SnapBI\Auth;
 
@@ -16,7 +16,7 @@ class AccessableToken
     /**
      * Constructor
      *
-     * @param string $name
+     * @param  string  $name
      */
     public function __construct($name = 'test')
     {
@@ -56,15 +56,14 @@ class AccessableToken
     /**
      * Get access token instance
      *
-     * @param string $name
-     *
+     * @param  string  $name
      * @return static
      */
     public static function get($name)
     {
         $token = new static($name);
 
-        if (!Cache::has($token->cacheKey())) {
+        if (! Cache::has($token->cacheKey())) {
             (new AccessToken($token->name))->getAccessToken();
         }
 
@@ -75,7 +74,7 @@ class AccessableToken
     {
         $payload = Cache::get($this->cacheKey());
 
-        if (!$payload) {
+        if (! $payload) {
             throw new \Exception('Access token not found.');
         }
 

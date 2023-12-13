@@ -1,8 +1,7 @@
-<?php 
+<?php
 
 namespace LensaWicara\SnapBI\Tests\Feature;
 
-use Illuminate\Support\Facades\Cache;
 use LensaWicara\SnapBI\Services\VirtualAccount;
 use LensaWicara\Tests\TestCase;
 use PHPUnit\Framework\Attributes\Test;
@@ -19,28 +18,28 @@ class VirtualAccountTest extends TestCase
     public function test_can_get_virtual_account_inquiry()
     {
         $body = [
-            "partnerServiceId" => "88899",
-            "customerNo" => "12345678901234567890",
-            "virtualAccountNo" => "08889912345678901234567890",
-            "txnDateInit" => "20201231T235959Z",
-            "channelCode" => 6011,
-            "language" => "ID",
-            "amount" => [
-                "value" => "12345678.00",
-                "currency" => "IDR"
+            'partnerServiceId' => '88899',
+            'customerNo' => '12345678901234567890',
+            'virtualAccountNo' => '08889912345678901234567890',
+            'txnDateInit' => '20201231T235959Z',
+            'channelCode' => 6011,
+            'language' => 'ID',
+            'amount' => [
+                'value' => '12345678.00',
+                'currency' => 'IDR',
             ],
-            "hashedSourceAccountNo" => "abcdefghijklmnopqrstuvwxyz123456",
-            "sourceBankCode" => "008",
-            "passApp" => "abcdefghijklmnopqrstuvwxyz",
-            "inquiryRequestId" => "abcdef-123456-abcdef",
-            "additionalInfo" => [
-                "deviceId" => "12345679237",
-                "channel" => "mobilephone"
-            ]
+            'hashedSourceAccountNo' => 'abcdefghijklmnopqrstuvwxyz123456',
+            'sourceBankCode' => '008',
+            'passApp' => 'abcdefghijklmnopqrstuvwxyz',
+            'inquiryRequestId' => 'abcdef-123456-abcdef',
+            'additionalInfo' => [
+                'deviceId' => '12345679237',
+                'channel' => 'mobilephone',
+            ],
         ];
 
         $va = new VirtualAccount;
-        
+
         $response = $va->using('inquiry')->withBody($body)->send();
 
         // $responseData = [
@@ -131,53 +130,52 @@ class VirtualAccountTest extends TestCase
     public function test_can_create_va()
     {
         $body = [
-            "partnerServiceId" => "088899",
-            "customerNo" => "12345678901234567890",
-            "virtualAccountNo" => "08889912345678901234567890",
-            "virtualAccountName" => "Jokul Doe",
-            "virtualAccountEmail" => "jokul@email.com",
-            "virtualAccountPhone" => "6281828384858",
-            "trxId" => "abcdefgh1234",
-            "totalAmount" => [
-                "value" => "12345678.00",
-                "currency" => "IDR"
+            'partnerServiceId' => '088899',
+            'customerNo' => '12345678901234567890',
+            'virtualAccountNo' => '08889912345678901234567890',
+            'virtualAccountName' => 'Jokul Doe',
+            'virtualAccountEmail' => 'jokul@email.com',
+            'virtualAccountPhone' => '6281828384858',
+            'trxId' => 'abcdefgh1234',
+            'totalAmount' => [
+                'value' => '12345678.00',
+                'currency' => 'IDR',
             ],
-            "billDetails" => [
+            'billDetails' => [
                 [
-                    "billCode" => "01",
-                    "billNo" => "123456789012345678",
-                    "billName" => "Bill A for Jan",
-                    "billShortName" => "Bill A",
-                    "billDescription" => [
-                        "english" => "Maintenance",
-                        "indonesia" => "Pemeliharaan"
+                    'billCode' => '01',
+                    'billNo' => '123456789012345678',
+                    'billName' => 'Bill A for Jan',
+                    'billShortName' => 'Bill A',
+                    'billDescription' => [
+                        'english' => 'Maintenance',
+                        'indonesia' => 'Pemeliharaan',
                     ],
-                    "billSubCompany" => "00001",
-                    "billAmount" => [
-                        "value" => "12345678.00",
-                        "currency" => "IDR"
+                    'billSubCompany' => '00001',
+                    'billAmount' => [
+                        'value' => '12345678.00',
+                        'currency' => 'IDR',
                     ],
-                    "additionalInfo" => []
-                ]
+                    'additionalInfo' => [],
+                ],
             ],
-            "freeTexts" => [
+            'freeTexts' => [
                 [
-                    "english" => "Free text",
-                    "indonesia" => "Tulisan bebas"
-                ]
+                    'english' => 'Free text',
+                    'indonesia' => 'Tulisan bebas',
+                ],
             ],
-            "virtualAccountTrxType" => "1",
-            "feeAmount" => [
-                "value" => "12345678.00",
-                "currency" => "IDR"
+            'virtualAccountTrxType' => '1',
+            'feeAmount' => [
+                'value' => '12345678.00',
+                'currency' => 'IDR',
             ],
-            "expiredDate" => "2020-12-31T23:59:59-07:00",
-            "additionalInfo" => [
-                "deviceId" => "12345679237",
-                "channel" => "mobilephone"
-            ]
+            'expiredDate' => '2020-12-31T23:59:59-07:00',
+            'additionalInfo' => [
+                'deviceId' => '12345679237',
+                'channel' => 'mobilephone',
+            ],
         ];
-
 
         $va = new VirtualAccount;
 
@@ -260,10 +258,10 @@ class VirtualAccountTest extends TestCase
     public function test_can_get_virtual_account_inquiry_va()
     {
         $body = [
-            "partnerServiceId" => "088899",
-            "customerNo" => "12345678901234567890",
-            "virtualAccountNo" => "08889912345678901234567890",
-            "trxId" => "abcdefgh1234"
+            'partnerServiceId' => '088899',
+            'customerNo' => '12345678901234567890',
+            'virtualAccountNo' => '08889912345678901234567890',
+            'trxId' => 'abcdefgh1234',
         ];
 
         $va = new VirtualAccount;
@@ -348,62 +346,62 @@ class VirtualAccountTest extends TestCase
     public function test_can_make_payment_va()
     {
         $body = [
-            "partnerServiceId" => "088899",
-            "customerNo" => "12345678901234567890",
-            "virtualAccountNo" => "08889912345678901234567890",
-            "virtualAccountName" => "Jokul Doe",
-            "virtualAccountEmail" => "jokul@email.com",
-            "virtualAccountPhone" => "6281828384858",
-            "trxId" => "abcdefgh1234",
-            "paymentRequestId" => "abcdef-123456-abcdef",
-            "channelCode" => 6011,
-            "hashedSourceAccountNo" => "abcdefghijklmnopqrstuvwxyz123456",
-            "sourceBankCode" => "008",
-            "paidAmount" => [
-                "value" => "12345678.00",
-                "currency" => "IDR"
+            'partnerServiceId' => '088899',
+            'customerNo' => '12345678901234567890',
+            'virtualAccountNo' => '08889912345678901234567890',
+            'virtualAccountName' => 'Jokul Doe',
+            'virtualAccountEmail' => 'jokul@email.com',
+            'virtualAccountPhone' => '6281828384858',
+            'trxId' => 'abcdefgh1234',
+            'paymentRequestId' => 'abcdef-123456-abcdef',
+            'channelCode' => 6011,
+            'hashedSourceAccountNo' => 'abcdefghijklmnopqrstuvwxyz123456',
+            'sourceBankCode' => '008',
+            'paidAmount' => [
+                'value' => '12345678.00',
+                'currency' => 'IDR',
             ],
-            "cumulativePaymentAmount" => [
-                "value" => "12345678.00",
-                "currency" => "IDR"
+            'cumulativePaymentAmount' => [
+                'value' => '12345678.00',
+                'currency' => 'IDR',
             ],
-            "paidBills" => "95000",
-            "totalAmount" => [
-                "value" => "12345678.00",
-                "currency" => "IDR"
+            'paidBills' => '95000',
+            'totalAmount' => [
+                'value' => '12345678.00',
+                'currency' => 'IDR',
             ],
-            "trxDateTime" => "20201231T235959Z",
-            "referenceNo" => "123456789012345",
-            "journalNum" => "123456",
-            "paymentType" => 1,
-            "flagAdvise" => "Y",
-            "subCompany" => "12345",
-            "billDetails" => [
+            'trxDateTime' => '20201231T235959Z',
+            'referenceNo' => '123456789012345',
+            'journalNum' => '123456',
+            'paymentType' => 1,
+            'flagAdvise' => 'Y',
+            'subCompany' => '12345',
+            'billDetails' => [
                 [
-                    "billCode" => "01",
-                    "billNo" => "123456789012345678",
-                    "billName" => "Bill A for Jan",
-                    "billShortName" => "Bill A",
-                    "billDescription" => [
-                        "english" => "Maintenance",
-                        "indonesia" => "Pemeliharaan"
+                    'billCode' => '01',
+                    'billNo' => '123456789012345678',
+                    'billName' => 'Bill A for Jan',
+                    'billShortName' => 'Bill A',
+                    'billDescription' => [
+                        'english' => 'Maintenance',
+                        'indonesia' => 'Pemeliharaan',
                     ],
-                    "billSubCompany" => "00001",
-                    "billAmount" => [
-                        "value" => "12345678.00",
-                        "currency" => "IDR"
+                    'billSubCompany' => '00001',
+                    'billAmount' => [
+                        'value' => '12345678.00',
+                        'currency' => 'IDR',
                     ],
-                    "additionalInfo" => [],
-                    "billReferenceNo" => "123456789012345"
-                ]
+                    'additionalInfo' => [],
+                    'billReferenceNo' => '123456789012345',
+                ],
             ],
-            "freeTexts" => [
+            'freeTexts' => [
                 [
-                    "english" => "Free text",
-                    "indonesia" => "Tulisan bebas"
-                ]
+                    'english' => 'Free text',
+                    'indonesia' => 'Tulisan bebas',
+                ],
             ],
-            "additionalInfo" => []
+            'additionalInfo' => [],
         ];
 
         $va = new VirtualAccount;
@@ -507,12 +505,12 @@ class VirtualAccountTest extends TestCase
     public function test_can_get_virtual_account_report()
     {
         $body = [
-            "partnerServiceId" => "088899",
-            "startDate" => "2020-12-31",
-            "startTime" => "14:56:11+07:00",
-            "endDate" => "2021-12-31",
-            "endTime" => "14:56:11+07:00",
-            "additionalInfo" => []
+            'partnerServiceId' => '088899',
+            'startDate' => '2020-12-31',
+            'startTime' => '14:56:11+07:00',
+            'endDate' => '2021-12-31',
+            'endTime' => '14:56:11+07:00',
+            'additionalInfo' => [],
         ];
 
         $va = new VirtualAccount;
@@ -615,14 +613,13 @@ class VirtualAccountTest extends TestCase
     public function test_can_inquiry_status()
     {
         $body = [
-            "partnerServiceId" => "088899",
-            "customerNo" => "12345678901234567890",
-            "virtualAccountNo" => "08889912345678901234567890",
-            "inquiryRequestId"=>"abcdef-123456-abcdef",
-            "paymentRequestId"=>"abcdef-123456-abcdef",
-            "additionalInfo"=>[]
+            'partnerServiceId' => '088899',
+            'customerNo' => '12345678901234567890',
+            'virtualAccountNo' => '08889912345678901234567890',
+            'inquiryRequestId' => 'abcdef-123456-abcdef',
+            'paymentRequestId' => 'abcdef-123456-abcdef',
+            'additionalInfo' => [],
         ];
-
 
         $va = new VirtualAccount;
 

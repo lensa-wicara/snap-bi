@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace LensaWicara\SnapBI\Signature;
 
@@ -7,11 +7,7 @@ class SymmetricPayload
     /**
      * Create symmetric payload
      *
-     * @param string $method
-     * @param string $endpointUrl
-     * @param string $accessToken
-     * @param string $timestamp
-     * @param string $payload
+     * @param  string  $payload
      */
     public function __construct(
         protected string $method,

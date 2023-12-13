@@ -1,11 +1,10 @@
-<?php 
+<?php
 
 namespace LensaWicara\SnapBI\Services;
 
 use LensaWicara\SnapBI\Auth\AccessableToken;
 use LensaWicara\SnapBI\Auth\AccessToken;
 use LensaWicara\SnapBI\Http\SnapClient;
-use LensaWicara\SnapBI\Signature\SymmetricPayload;
 use LensaWicara\SnapBI\Support\Header;
 use LensaWicara\SnapBI\Support\Signature;
 use LensaWicara\SnapBI\Support\Timestamp;
@@ -67,35 +66,30 @@ class VirtualAccount
 
     /**
      * withBody
-     * 
-     * @param array $body
-     * @return self
      */
     public function withBody(array $body): self
     {
         $this->body = $body;
-        
+
         return $this;
     }
 
     /**
      * using
-     * 
-     * @param string $endpoint
-     * @return self
      */
     public function using(string $endpoint): self
     {
         $this->using = $endpoint;
         $this->endpoint = $this->endpoints[$endpoint];
-        
+
         return $this;
     }
 
     /**
      * send request
-     * 
+     *
      * @return mixed|self
+     *
      * @throws \Illuminate\Http\Client\RequestException
      */
     public function send()
@@ -109,7 +103,7 @@ class VirtualAccount
         $method = strtolower($this->endpointsMethod[$this->using]);
 
         $response = $this->client->withHeaders($this->headers())
-                        ->$method($this->endpoint, $this->body);
+            ->$method($this->endpoint, $this->body);
 
         if ($response->successful()) {
             return $response->json();
@@ -120,8 +114,6 @@ class VirtualAccount
 
     /**
      * get headers
-     * 
-     * @return array
      */
     protected function headers(): array
     {
@@ -129,8 +121,8 @@ class VirtualAccount
             'x-client-key' => config('snap-bi.providers.aspi.client_id'),
             // timestamp on the header must be the same as the timestamp on the request signature
             'x-timestamp' => (string) $this->timestamp,
-            'authorization' => 'Bearer '. static::authorization(),
-            'authorization-customer' => 'Bearer '. static::authorizationCustomer(),
+            'authorization' => 'Bearer '.static::authorization(),
+            'authorization-customer' => 'Bearer '.static::authorizationCustomer(),
             'x-signature' => $this->signatureService(),
             'x-origin' => request()->getHost(),
             'x-partner-id' => config('snap-bi.providers.aspi.client_id'),
@@ -145,8 +137,6 @@ class VirtualAccount
 
     /**
      * authorization
-     * 
-     * @return string
      */
     protected static function authorization(): string
     {
@@ -155,8 +145,6 @@ class VirtualAccount
 
     /**
      * authorization customer
-     * 
-     * @return string
      */
     protected static function authorizationCustomer(): string
     {
@@ -171,8 +159,6 @@ class VirtualAccount
 
     /**
      * get signature service
-     * 
-     * @return string
      */
     protected function signatureService(): string
     {
