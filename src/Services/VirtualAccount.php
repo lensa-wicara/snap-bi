@@ -104,11 +104,9 @@ class VirtualAccount
      */
     protected function signatureService()
     {
-        $baseUrl = config('snap-bi.providers.aspi.base_url');
-
         return $this->signature->signatureService(
             'POST',
-            $baseUrl.$this->endpoint,
+            $this->endpoint,
             $this->body,
             static::authorization(),
             [
