@@ -62,6 +62,7 @@ class VirtualAccount
     {
         return Header::make([
             'x-client-key' => config('snap-bi.providers.aspi.client_id'),
+            // timestamp on the header must be the same as the timestamp on the request signature
             'x-timestamp' => (string) $this->timestamp,
             'authorization' => 'Bearer '. static::authorization(),
             'authorization-customer' => 'Bearer '. static::authorizationCustomer(),
@@ -110,6 +111,7 @@ class VirtualAccount
             $this->body,
             static::authorization(),
             [
+                // timestamp on the header must be the same as the timestamp on the request signature
                 'X-TIMESTAMP' => (string) $this->timestamp,
             ]
         );
