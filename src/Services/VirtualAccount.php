@@ -12,7 +12,17 @@ use LensaWicara\SnapBI\Support\Timestamp;
 
 class VirtualAccount
 {
-    public string $endpoint = '/api/v1.0/transfer-va/inquiry';
+    // endpoint
+    public ?string $endpoint = null;
+
+    // endpoints
+    public array $endpoints = [
+        'inquiry' => '/api/v1.0/transfer-va/inquiry',
+        'inquiry-va' => '/api/v1.0/transfer-va/inquiry-va',
+        'create-va' => '/api/v1.0/transfer-va/create-va',
+        'payment' => '/api/v1.0/transfer-va/payment',
+        'report' => '/api/v1.0/transfer-va/report',
+    ];
 
     protected ?SnapClient $client = null;
 
@@ -25,6 +35,9 @@ class VirtualAccount
     // timestamp
     protected Timestamp $timestamp;
 
+    /**
+     * Create new instance
+     */
     public function __construct()
     {
         $this->timestamp = new Timestamp();
@@ -32,8 +45,13 @@ class VirtualAccount
         $this->signature = new Signature();
     }
 
-    // withBody
-    public function withBody(array $body)
+    /**
+     * withBody
+     * 
+     * @param array $body
+     * @return self
+     */
+    public function withBody(array $body): self
     {
         $this->body = $body;
         
@@ -41,12 +59,53 @@ class VirtualAccount
     }
 
     /**
-     * create virtual account
+     * using
      * 
+     * @param string $endpoint
+     * @return self
+     */
+    public function using(string $endpoint): self
+    {
+        $this->endpoint = $this->endpoints[$endpoint];
+        
+        return $this;
+    }
+
+    /**
+     * virtual account inquiry
+     * 
+     * @return mixed|self
+     * @throws \Illuminate\Http\Client\RequestException
      */
     public function inquiry()
     {
-        $response = $this->client->withHeaders($this->headers())->post($this->endpoint, $this->body);
+        // endpoint must be set
+        if (is_null($this->endpoint)) {
+            throw new \Exception('Endpoint has not been set. Please use `using` method to set endpoint');
+        }
+
+        $response = $this->client->withHeaders($this->headers())
+                        ->post($this->endpoint, $this->body);
+
+        if ($response->successful()) {
+            return $response->json();
+        }
+
+        return $response->throw();
+    }
+
+    /**
+     * virtual account create va
+     */
+    public function createVa()
+    {
+        // endpoint must be set
+        if (is_null($this->endpoint)) {
+            throw new \Exception('Endpoint has not been set. Please use `using` method to set endpoint');
+        }
+
+        $response = $this->client->withHeaders($this->headers())
+                        ->post($this->endpoint, $this->body);
 
         if ($response->successful()) {
             return $response->json();
@@ -57,8 +116,10 @@ class VirtualAccount
 
     /**
      * get headers
+     * 
+     * @return array
      */
-    protected function headers()
+    protected function headers(): array
     {
         return Header::make([
             'x-client-key' => config('snap-bi.providers.aspi.client_id'),
@@ -80,16 +141,20 @@ class VirtualAccount
 
     /**
      * authorization
+     * 
+     * @return string
      */
-    protected static function authorization()
+    protected static function authorization(): string
     {
         return (string) AccessableToken::get('test');
     }
 
     /**
      * authorization customer
+     * 
+     * @return string
      */
-    protected static function authorizationCustomer()
+    protected static function authorizationCustomer(): string
     {
         $auth = (new AccessToken)->getCustomerAccessToken([
             'authCode' => 'a6975f82-d00a-4ddc-9633-087fefb6275e',
@@ -102,8 +167,10 @@ class VirtualAccount
 
     /**
      * get signature service
+     * 
+     * @return string
      */
-    protected function signatureService()
+    protected function signatureService(): string
     {
         return $this->signature->signatureService(
             'POST',
