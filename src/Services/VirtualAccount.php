@@ -95,6 +95,26 @@ class VirtualAccount
     }
 
     /**
+     * virtual account inquiry va
+     */
+    public function inquiryVa()
+    {
+        // endpoint must be set
+        if (is_null($this->endpoint)) {
+            throw new \Exception('Endpoint has not been set. Please use `using` method to set endpoint');
+        }
+
+        $response = $this->client->withHeaders($this->headers())
+                        ->post($this->endpoint, $this->body);
+
+        if ($response->successful()) {
+            return $response->json();
+        }
+
+        return $response->throw();
+    }
+
+    /**
      * virtual account create va
      */
     public function createVa()
