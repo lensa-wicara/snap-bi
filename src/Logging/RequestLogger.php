@@ -61,14 +61,12 @@ class RequestLogger
     public function getRequestMessage(Request $request): string
     {
         $message = [
-            'method' => $request->getMethod(),
-            'url' => $request->getUri(),
-            'headers' => $request->getHeaders(),
-            'body' => $request->getBody()->getContents(),
+            'status' => (string) $this->response->status(),
+            'method' => (string) $request->getMethod(),
+            'url' => (string) $request->getUri(),
         ];
 
-        // return combine all message to string
-        return implode(':', $message);
+        return collect($message)->join(' | ');
     }
 
     /**
@@ -78,11 +76,13 @@ class RequestLogger
      */
     public function getRequestContext(Request $request): array
     {
+        // hide sensitive data from headers and body
+        $headers = $this->hideSensitiveData($request->getHeaders());
+        $body = $this->hideSensitiveData($request->getBody()->getContents());
+
         $context = [
-            'method' => $request->getMethod(),
-            'url' => $request->getUri(),
-            'headers' => $request->getHeaders(),
-            'body' => $request->getBody()->getContents(),
+            'headers' => $headers,
+            'body' => $body,
         ];
 
         return $context;
@@ -95,14 +95,54 @@ class RequestLogger
      */
     public function getResponseContext(): array
     {
+        // hide sensitive data from headers and body
+        $headers = $this->hideSensitiveData($this->response->headers());
+        $body = $this->hideSensitiveData($this->response->json());
+
         $context = [
             'statusCode' => $this->response->status(),
-            'headers' => $this->response->headers(),
-            'body' => $this->response->json(),
+            'headers' => $headers,
+            'body' => $body,
         ];
 
         return $context;
     }
+
+    /**
+     * hide sensitive data from method get request context, get response context and get request message
+     */
+    public function hideSensitiveData($data)
+    {
+        // keys to hide
+        $keys = [
+            'Authorization',
+            'Authorization-Customer',
+            'X-CLIENT-SECRET',
+            'X-CLIENT-KEY',
+            'accessToken'
+        ];
+
+        // return
+        if (is_array($data)) {
+            return collect($data)->map(function ($value, $key) use ($keys) {
+                if (in_array($key, $keys)) {
+                    return '********';
+                }
+
+                return $value;
+            })->toArray();
+        }
+
+        // if it string make it array to hide sensitive data
+        if (is_string($data)) {
+            $data = json_decode($data, true);
+
+            return $this->hideSensitiveData($data);
+        }
+
+        return $data;
+    }
+
 
     public function __destruct()
     {
