@@ -4,8 +4,8 @@ namespace LensaWicara\SnapBI\Services;
 
 use LensaWicara\SnapBI\Auth\AccessableToken;
 use LensaWicara\SnapBI\Auth\AccessToken;
+use LensaWicara\SnapBI\Http\Header;
 use LensaWicara\SnapBI\Http\SnapClient;
-use LensaWicara\SnapBI\Support\Header;
 use LensaWicara\SnapBI\Support\Signature;
 use LensaWicara\SnapBI\Support\Timestamp;
 

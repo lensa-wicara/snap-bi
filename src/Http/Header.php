@@ -1,6 +1,6 @@
 <?php
 
-namespace LensaWicara\SnapBI\Support;
+namespace LensaWicara\SnapBI\Http;
 
 use Illuminate\Contracts\Support\Arrayable;
 
