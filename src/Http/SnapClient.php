@@ -4,6 +4,7 @@ namespace LensaWicara\SnapBI\Http;
 
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\Http;
+use LensaWicara\SnapBI\Logging\RequestLogger;
 
 class SnapClient
 {
@@ -31,26 +32,6 @@ class SnapClient
         return $this;
     }
 
-    public function get(string $endpoint, array $query = [])
-    {
-        return $this->client->get($endpoint, $query);
-    }
-
-    public function post(string $endpoint, array $data = [])
-    {
-        return $this->client->post($endpoint, $data);
-    }
-
-    public function put(string $endpoint, array $data = [])
-    {
-        return $this->client->put($endpoint, $data);
-    }
-
-    public function delete(string $endpoint, array $data = [])
-    {
-        return $this->client->delete($endpoint, $data);
-    }
-
     /**
      * Magic method to handle dynamic method calls.
      *
@@ -72,6 +53,8 @@ class SnapClient
 
         if (in_array($method, ['get', 'post', 'put', 'delete'])) {
             $response = $this->client->$method(...$arguments);
+
+            RequestLogger::dispatch($response);
 
             $this->client = null;
 

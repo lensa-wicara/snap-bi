@@ -3,6 +3,7 @@
 namespace LensaWicara\Tests\Feature;
 
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use LensaWicara\SnapBI\Auth\AccessableToken;
 use LensaWicara\SnapBI\Auth\AccessToken;
 use LensaWicara\SnapBI\Support\Signature;
@@ -17,8 +18,6 @@ class AccessTokenTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-
-        $baseUrl = config('snap-bi.providers.aspi.base_url');
 
         // set config to use test keys
         // fake http client

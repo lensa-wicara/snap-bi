@@ -13,6 +13,13 @@ class ServiceProvider extends BaseServiceProvider
         $this->app->bind(HttpSnapClient::class, function ($app) {
             return new HttpSnapClient();
         });
+
+        // publish config
+        if ($this->app->runningInConsole()) {
+            $this->publishes([
+                __DIR__.'/../config/snap-bi.php' => config_path('snap-bi.php'),
+            ], 'config');
+        }
     }
 
     public function register()

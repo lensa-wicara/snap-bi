@@ -1,7 +1,15 @@
 <?php
 
 return [
+    // environment
     'environment' => env('ASPI_APP_ENV', 'aspi'),
+
+    'logging' => [
+        'channel' => env('ASPI_LOG_CHANNEL', 'daily'),
+        'log_level' => env('ASPI_LOG_LEVEL', 'debug'),
+    ],
+
+    // providers
     'providers' => [
         // test: https://apidevportal.aspi-indonesia.or.id/request-aplikasi-pengujian
         'aspi' => [
