@@ -77,9 +77,25 @@ class VirtualAccount implements TransferCreditVirtualAccount
 
     /**
      * using
+     *
+     * @param  string  $endpoint
+     * - inquiry
+     * - inquiry-va
+     * - create-va
+     * - update-va
+     * - delete-va
+     * - payment
+     * - status
+     * - report
+     * - update-status
      */
     public function using(string $endpoint): self
     {
+        // if endpoint not found
+        if (! array_key_exists($endpoint, $this->endpoints)) {
+            throw new \Exception('Endpoint not found');
+        }
+
         $this->using = $endpoint;
         $this->endpoint = $this->endpoints[$endpoint];
 
@@ -90,6 +106,7 @@ class VirtualAccount implements TransferCreditVirtualAccount
      * send request
      *
      * @return mixed|self
+     *
      * @throws \Illuminate\Http\Client\RequestException
      */
     public function send()

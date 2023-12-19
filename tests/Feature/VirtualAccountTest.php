@@ -2,6 +2,9 @@
 
 namespace LensaWicara\SnapBI\Tests\Feature;
 
+use LensaWicara\SnapBI\Providers\Snap;
+use LensaWicara\SnapBI\Services\Payload\Amount;
+use LensaWicara\SnapBI\Services\Payload\VirtualAccount\CreateVAPayload;
 use LensaWicara\SnapBI\Services\VirtualAccount;
 use LensaWicara\Tests\TestCase;
 use PHPUnit\Framework\Attributes\Test;
@@ -129,7 +132,7 @@ class VirtualAccountTest extends TestCase
     // can create VA
     public function test_can_create_va()
     {
-        $body = [
+        $payload = [
             'partnerServiceId' => '088899',
             'customerNo' => '12345678901234567890',
             'virtualAccountNo' => '08889912345678901234567890',
@@ -177,9 +180,30 @@ class VirtualAccountTest extends TestCase
             ],
         ];
 
-        $va = new VirtualAccount;
+        $body = new CreateVAPayload(
+            partnerServiceId: $payload['partnerServiceId'],
+            customerNo: $payload['customerNo'],
+            virtualAccountNo: $payload['virtualAccountNo'],
+            virtualAccountName: $payload['virtualAccountName'],
+            virtualAccountEmail: $payload['virtualAccountEmail'],
+            virtualAccountPhone: $payload['virtualAccountPhone'],
+            trxId: $payload['trxId'],
+            totalAmount: new Amount(
+                amount: $payload['totalAmount']['value'],
+                currency: $payload['totalAmount']['currency'],
+            ),
+            billDetails: $payload['billDetails'],
+            freeTexts: $payload['freeTexts'],
+            virtualAccountTrxType: $payload['virtualAccountTrxType'],
+            feeAmount: new Amount(
+                amount: $payload['feeAmount']['value'],
+                currency: $payload['feeAmount']['currency']
+            ),
+            expiredDate: $payload['expiredDate'],
+            additionalInfo: $payload['additionalInfo'],
+        );
 
-        $response = $va->using('create-va')->withBody($body)->send();
+        $response = Snap::virtualAccount()->using('create-va')->withBody($body->toArray())->send();
 
         // $responseData = [
         //     "responseCode" => "2002700",
