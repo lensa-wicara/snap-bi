@@ -4,12 +4,13 @@ namespace LensaWicara\SnapBI\Services;
 
 use LensaWicara\SnapBI\Auth\AccessableToken;
 use LensaWicara\SnapBI\Auth\AccessToken;
+use LensaWicara\SnapBI\Contracts\TransferCredit\VirtualAccount as TransferCreditVirtualAccount;
 use LensaWicara\SnapBI\Http\Header;
 use LensaWicara\SnapBI\Http\SnapClient;
 use LensaWicara\SnapBI\Support\Signature;
 use LensaWicara\SnapBI\Support\Timestamp;
 
-class VirtualAccount
+class VirtualAccount implements TransferCreditVirtualAccount
 {
     // using
     public ?string $using = null;
@@ -89,7 +90,6 @@ class VirtualAccount
      * send request
      *
      * @return mixed|self
-     *
      * @throws \Illuminate\Http\Client\RequestException
      */
     public function send()
