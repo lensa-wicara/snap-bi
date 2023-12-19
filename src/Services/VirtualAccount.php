@@ -99,6 +99,11 @@ class VirtualAccount
             throw new \Exception('Endpoint has not been set. Please use `using` method to set endpoint');
         }
 
+        // body must be set
+        if (empty($this->body)) {
+            throw new \Exception('Body has not been set. Please use `withBody` method to set body');
+        }
+
         // method
         $method = strtolower($this->endpointsMethod[$this->using]);
 

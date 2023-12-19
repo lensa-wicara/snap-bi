@@ -3,6 +3,7 @@
 namespace LensaWicara\SnapBI;
 
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
+use LensaWicara\SnapBI\Contracts\Client;
 use LensaWicara\SnapBI\Http\SnapClient as HttpSnapClient;
 
 class ServiceProvider extends BaseServiceProvider
@@ -10,7 +11,7 @@ class ServiceProvider extends BaseServiceProvider
     public function boot()
     {
         // snap client
-        $this->app->bind(HttpSnapClient::class, function ($app) {
+        $this->app->bind(Client::class, function ($app) {
             return new HttpSnapClient();
         });
 

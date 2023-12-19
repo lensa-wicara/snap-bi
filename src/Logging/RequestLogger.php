@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace LensaWicara\SnapBI\Logging;
 
@@ -12,8 +12,6 @@ class RequestLogger
 
     /**
      * Constructor
-     *
-     * @param Response $response
      */
     public function __construct(Response $response)
     {
@@ -23,7 +21,6 @@ class RequestLogger
     /**
      * dispatch
      *
-     * @param Response $response
      * @return static
      */
     public static function dispatch(Response $response)
@@ -43,8 +40,6 @@ class RequestLogger
 
     /**
      * log level
-     *
-     * @return string
      */
     public function getLogLevel(): string
     {
@@ -55,8 +50,6 @@ class RequestLogger
 
     /**
      * get request message
-     *
-     * @return string
      */
     public function getRequestMessage(Request $request): string
     {
@@ -119,7 +112,7 @@ class RequestLogger
             'Authorization-Customer',
             'X-CLIENT-SECRET',
             'X-CLIENT-KEY',
-            'accessToken'
+            'accessToken',
         ];
 
         // return
@@ -143,7 +136,6 @@ class RequestLogger
         return $data;
     }
 
-
     public function __destruct()
     {
         $request = $this->response->transferStats->getRequest();
@@ -151,10 +143,10 @@ class RequestLogger
         try {
             Log::channel($this->getChannel())->log($this->getLogLevel(),
                 $this->getRequestMessage($request),
-            [
-                'request' => $this->getRequestContext($request),
-                'response' => $this->getResponseContext(),
-            ]);
+                [
+                    'request' => $this->getRequestContext($request),
+                    'response' => $this->getResponseContext(),
+                ]);
         } catch (\Exception $exception) {
             Log::error($exception);
         }

@@ -3,7 +3,6 @@
 namespace LensaWicara\Tests\Feature;
 
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 use LensaWicara\SnapBI\Auth\AccessableToken;
 use LensaWicara\SnapBI\Auth\AccessToken;
 use LensaWicara\SnapBI\Support\Signature;
