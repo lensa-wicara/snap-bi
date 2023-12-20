@@ -9,7 +9,7 @@ use LensaWicara\SnapBI\Services\Payload\VirtualAccount\InquiryPayload;
 use LensaWicara\SnapBI\Services\Payload\VirtualAccount\InquiryVAPayload;
 use LensaWicara\SnapBI\Services\Payload\VirtualAccount\PaymentPayload;
 use LensaWicara\SnapBI\Services\Payload\VirtualAccount\ReportPayload;
-use LensaWicara\SnapBI\Services\VirtualAccount;
+use LensaWicara\SnapBI\Services\Payload\VirtualAccount\StatusPayload;
 use LensaWicara\Tests\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 
@@ -317,80 +317,16 @@ class VirtualAccountTest extends TestCase
     // inquiry status
     public function test_can_inquiry_status()
     {
-        $body = [
-            'partnerServiceId' => '088899',
-            'customerNo' => '12345678901234567890',
-            'virtualAccountNo' => '08889912345678901234567890',
-            'inquiryRequestId' => 'abcdef-123456-abcdef',
-            'paymentRequestId' => 'abcdef-123456-abcdef',
-            'additionalInfo' => [],
-        ];
+        $body = new StatusPayload(
+            partnerServiceId: '088899',
+            customerNo: '12345678901234567890',
+            virtualAccountNo: '08889912345678901234567890',
+            inquiryRequestId: 'abcdef-123456-abcdef',
+            paymentRequestId: 'abcdef-123456-abcdef',
+            additionalInfo: [],
+        );
 
-        $va = new VirtualAccount;
-
-        $response = $va->using('status')->withBody($body)->send();
-
-        // array:4 [
-        //   "responseCode" => "2002600"
-        //   "responseMessage" => "Successful"
-        //   "virtualAccountData" => array:17 [
-        //     "paymentFlagReason" => array:2 [
-        //       "english" => "Success"
-        //       "indonesia" => "Sukses"
-        //     ]
-        //     "partnerServiceId" => "088899"
-        //     "customerNo" => "12345678901234567890"
-        //     "virtualAccountNo" => "08889912345678901234567890"
-        //     "inquiryRequestId" => "abcdef-123456-abcdef"
-        //     "paymentRequestId" => "abcdef-123456-abcdef"
-        //     "paidAmount" => array:2 [
-        //       "value" => "55000"
-        //       "currency" => "IDR"
-        //     ]
-        //     "paidBills" => "100101"
-        //     "totalAmount" => array:2 [
-        //       "value" => "55000"
-        //       "currency" => "IDR"
-        //     ]
-        //     "trxDateTime" => "2023-12-13T17:54:04+07:00"
-        //     "transactionDate" => "2023-12-13T17:54:04+07:00"
-        //     "referenceNo" => "123456789012345"
-        //     "paymentType" => "1"
-        //     "flagAdvise" => "Y"
-        //     "paymentFlagStatus" => "00"
-        //     "billDetails" => array:1 [
-        //       0 => array:11 [
-        //         "billCode" => "01"
-        //         "billNo" => "123456789012345678"
-        //         "billName" => "Bill A for Jan"
-        //         "billShortName" => "Bill A"
-        //         "billDescription" => array:2 [
-        //           "english" => "Maintenance"
-        //           "indonesia" => "Pemeliharaan"
-        //         ]
-        //         "billSubCompany" => "00001"
-        //         "billAmount" => array:2 [
-        //           "value" => "50000"
-        //           "currency" => "IDR"
-        //         ]
-        //         "additionalInfo" => []
-        //         "billReferenceNo" => "123456789012345"
-        //         "status" => "00"
-        //         "reason" => array:2 [
-        //           "english" => "Success"
-        //           "indonesia" => "Sukses"
-        //         ]
-        //       ]
-        //     ]
-        //     "freeTexts" => array:1 [
-        //       0 => array:2 [
-        //         "english" => "Free text"
-        //         "indonesia" => "Tulisan bebas"
-        //       ]
-        //     ]
-        //   ]
-        //   "additionalInfo" => []
-        // ]
+        $response = Snap::virtualAccount()->using('status')->withBody($body)->send();
 
         $this->assertIsArray($response);
         $this->assertArrayHasKey('responseCode', $response);
