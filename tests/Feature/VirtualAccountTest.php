@@ -7,6 +7,7 @@ use LensaWicara\SnapBI\Services\Payload\Amount;
 use LensaWicara\SnapBI\Services\Payload\VirtualAccount\CreateVAPayload;
 use LensaWicara\SnapBI\Services\Payload\VirtualAccount\InquiryPayload;
 use LensaWicara\SnapBI\Services\Payload\VirtualAccount\InquiryVAPayload;
+use LensaWicara\SnapBI\Services\Payload\VirtualAccount\PaymentPayload;
 use LensaWicara\SnapBI\Services\VirtualAccount;
 use LensaWicara\Tests\TestCase;
 use PHPUnit\Framework\Attributes\Test;
@@ -181,38 +182,38 @@ class VirtualAccountTest extends TestCase
     // can make payment va
     public function test_can_make_payment_va()
     {
-        $body = [
-            'partnerServiceId' => '088899',
-            'customerNo' => '12345678901234567890',
-            'virtualAccountNo' => '08889912345678901234567890',
-            'virtualAccountName' => 'Jokul Doe',
-            'virtualAccountEmail' => 'jokul@email.com',
-            'virtualAccountPhone' => '6281828384858',
-            'trxId' => 'abcdefgh1234',
-            'paymentRequestId' => 'abcdef-123456-abcdef',
-            'channelCode' => 6011,
-            'hashedSourceAccountNo' => 'abcdefghijklmnopqrstuvwxyz123456',
-            'sourceBankCode' => '008',
-            'paidAmount' => [
-                'value' => '12345678.00',
-                'currency' => 'IDR',
-            ],
-            'cumulativePaymentAmount' => [
-                'value' => '12345678.00',
-                'currency' => 'IDR',
-            ],
-            'paidBills' => '95000',
-            'totalAmount' => [
-                'value' => '12345678.00',
-                'currency' => 'IDR',
-            ],
-            'trxDateTime' => '20201231T235959Z',
-            'referenceNo' => '123456789012345',
-            'journalNum' => '123456',
-            'paymentType' => 1,
-            'flagAdvise' => 'Y',
-            'subCompany' => '12345',
-            'billDetails' => [
+        $body = new PaymentPayload(
+            partnerServiceId: '088899',
+            customerNo: '12345678901234567890',
+            virtualAccountNo: '08889912345678901234567890',
+            virtualAccountName: 'Jokul Doe',
+            virtualAccountEmail: 'jokul@email.com',
+            virtualAccountPhone: '6281828384858',
+            trxId: 'abcdefgh1234',
+            paymentRequestId: 'abcdef-123456-abcdef',
+            channelCode: 6011,
+            hashedSourceAccountNo: 'abcdefghijklmnopqrstuvwxyz123456',
+            sourceBankCode: '008',
+            paidAmount: new Amount(
+                amount: '12345678.00',
+                currency: 'IDR',
+            ),
+            cumulativePaymentAmount: new Amount(
+                amount: '12345678.00',
+                currency: 'IDR',
+            ),
+            paidBills: '95000',
+            totalAmount: new Amount(
+                amount: '12345678.00',
+                currency: 'IDR',
+            ),
+            trxDateTime: '20201231T235959Z',
+            referenceNo: '123456789012345',
+            journalNum: '123456',
+            paymentType: 1,
+            flagAdvise: 'Y',
+            subCompany: '12345',
+            billDetails: [
                 [
                     'billCode' => '01',
                     'billNo' => '123456789012345678',
@@ -223,91 +224,28 @@ class VirtualAccountTest extends TestCase
                         'indonesia' => 'Pemeliharaan',
                     ],
                     'billSubCompany' => '00001',
-                    'billAmount' => [
-                        'value' => '12345678.00',
-                        'currency' => 'IDR',
-                    ],
+                    'billAmount' => (new Amount(
+                        amount: '12345678.00',
+                        currency: 'IDR',
+                    ))->toArray(),
+                    // 'billAmount' => [
+                    //     'value' => '12345678.00',
+                    //     'currency' => 'IDR',
+                    // ],
                     'additionalInfo' => [],
                     'billReferenceNo' => '123456789012345',
                 ],
             ],
-            'freeTexts' => [
+            freeTexts: [
                 [
                     'english' => 'Free text',
                     'indonesia' => 'Tulisan bebas',
                 ],
             ],
-            'additionalInfo' => [],
-        ];
+            additionalInfo: [],
+        );
 
-        $va = new VirtualAccount;
-
-        $response = $va->using('payment')->withBody($body)->send();
-
-        // $responseData = [
-        //     "responseCode" => "2002500",
-        //     "responseMessage" => "Successful",
-        //     "virtualAccountData" => [
-        //         "paymentFlagReason" => [
-        //             "english" => "Success",
-        //             "indonesia" => "Sukses"
-        //         ],
-        //         "partnerServiceId" => "088899",
-        //         "customerNo" => "12345678901234567890",
-        //         "virtualAccountNo" => "08889912345678901234567890",
-        //         "virtualAccountName" => "Jokul Doe",
-        //         "virtualAccountEmail" => "jokul@email.com",
-        //         "virtualAccountPhone" => "6281828384858",
-        //         "trxId" => "abcdefgh1234",
-        //         "paymentRequestId" => "abcdef-123456-abcdef",
-        //         "paidAmount" => [
-        //             "value" => "12345678.00",
-        //             "currency" => "IDR"
-        //         ],
-        //         "paidBills" => "95000",
-        //         "totalAmount" => [
-        //             "value" => "12345678.00",
-        //             "currency" => "IDR"
-        //         ],
-        //         "trxDateTime" => "20201231T235959Z",
-        //         "referenceNo" => "123456789012345",
-        //         "journalNum" => "123456",
-        //         "paymentType" => "1",
-        //         "flagAdvise" => "Y",
-        //         "paymentFlagStatus" => "00",
-        //         "billDetails" => [
-        //             [
-        //                 "billerReferenceId" => "4314313572",
-        //                 "billCode" => "01",
-        //                 "billNo" => "123456789012345678",
-        //                 "billName" => "Bill A for Jan",
-        //                 "billShortName" => "Bill A",
-        //                 "billDescription" => [
-        //                     "english" => "Maintenance",
-        //                     "indonesia" => "Pemeliharaan"
-        //                 ],
-        //                 "billSubCompany" => "00001",
-        //                 "billAmount" => [
-        //                     "value" => "12345678.00",
-        //                     "currency" => "IDR"
-        //                 ],
-        //                 "additionalInfo" => [],
-        //                 "status" => "00",
-        //                 "reason" => [
-        //                     "english" => "Success",
-        //                     "indonesia" => "Sukses"
-        //                 ]
-        //             ]
-        //         ],
-        //         "freeTexts" => [
-        //             [
-        //                 "english" => "Free text",
-        //                 "indonesia" => "Tulisan bebas"
-        //             ]
-        //         ]
-        //     ],
-        //     "additionalInfo" => []
-        // ];
+        $response = Snap::virtualAccount()->using('payment')->withBody($body)->send();
 
         $this->assertIsArray($response);
         $this->assertArrayHasKey('responseCode', $response);
