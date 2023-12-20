@@ -5,6 +5,7 @@ namespace LensaWicara\SnapBI\Tests\Feature;
 use LensaWicara\SnapBI\Providers\Snap;
 use LensaWicara\SnapBI\Services\Payload\Amount;
 use LensaWicara\SnapBI\Services\Payload\VirtualAccount\CreateVAPayload;
+use LensaWicara\SnapBI\Services\Payload\VirtualAccount\InquiryPayload;
 use LensaWicara\SnapBI\Services\VirtualAccount;
 use LensaWicara\Tests\TestCase;
 use PHPUnit\Framework\Attributes\Test;
@@ -20,30 +21,25 @@ class VirtualAccountTest extends TestCase
     // can get virtual account inquiry
     public function test_can_get_virtual_account_inquiry()
     {
-        $body = [
-            'partnerServiceId' => '88899',
-            'customerNo' => '12345678901234567890',
-            'virtualAccountNo' => '08889912345678901234567890',
-            'txnDateInit' => '20201231T235959Z',
-            'channelCode' => 6011,
-            'language' => 'ID',
-            'amount' => [
-                'value' => '12345678.00',
-                'currency' => 'IDR',
-            ],
-            'hashedSourceAccountNo' => 'abcdefghijklmnopqrstuvwxyz123456',
-            'sourceBankCode' => '008',
-            'passApp' => 'abcdefghijklmnopqrstuvwxyz',
-            'inquiryRequestId' => 'abcdef-123456-abcdef',
-            'additionalInfo' => [
-                'deviceId' => '12345679237',
-                'channel' => 'mobilephone',
-            ],
-        ];
+        $body = new InquiryPayload(
+            partnerServiceId: '88899',
+            customerNo: '12345678901234567890',
+            virtualAccountNo: '08889912345678901234567890',
+            txnDateInit: '20201231T235959Z',
+            channelCode: 6011,
+            language: 'ID',
+            amount: new Amount(
+                amount: '12345678.00',
+                currency: 'IDR',
+            ),
+            hashedSourceAccountNo: 'abcdefghijklmnopqrstuvwxyz123456',
+            sourceBankCode: '008',
+            passApp: 'abcdefghijklmnopqrstuvwxyz',
+            inquiryRequestId: 'abcdef-123456-abcdef',
+            additionalInfo: []
+        );
 
-        $va = new VirtualAccount;
-
-        $response = $va->using('inquiry')->withBody($body)->send();
+        $response = Snap::virtualAccount()->using('inquiry')->withBody($body)->send();
 
         $this->assertIsArray($response);
         $this->assertArrayHasKey('responseCode', $response);
