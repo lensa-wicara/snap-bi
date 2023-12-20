@@ -69,4 +69,14 @@ class SnapClient
 
         return $this;
     }
+
+    /**
+     * withHeaders can be accessed statically
+     */
+    public static function __callStatic($method, $arguments)
+    {
+        $instance = new static();
+
+        return $instance->$method(...$arguments);
+    }
 }

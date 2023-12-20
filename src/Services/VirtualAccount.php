@@ -4,12 +4,13 @@ namespace LensaWicara\SnapBI\Services;
 
 use LensaWicara\SnapBI\Auth\AccessableToken;
 use LensaWicara\SnapBI\Auth\AccessToken;
+use LensaWicara\SnapBI\Contracts\TransferCredit\VirtualAccount as TransferCreditVirtualAccount;
 use LensaWicara\SnapBI\Http\Header;
 use LensaWicara\SnapBI\Http\SnapClient;
 use LensaWicara\SnapBI\Support\Signature;
 use LensaWicara\SnapBI\Support\Timestamp;
 
-class VirtualAccount
+class VirtualAccount implements TransferCreditVirtualAccount
 {
     // using
     public ?string $using = null;
@@ -67,8 +68,12 @@ class VirtualAccount
     /**
      * withBody
      */
-    public function withBody(array $body): self
+    public function withBody(array|object $body): self
     {
+        if (is_object($body)) {
+            $body = (array) $body->toArray();
+        }
+
         $this->body = $body;
 
         return $this;
@@ -76,9 +81,25 @@ class VirtualAccount
 
     /**
      * using
+     *
+     * @param  string  $endpoint
+     * - inquiry
+     * - inquiry-va
+     * - create-va
+     * - update-va
+     * - delete-va
+     * - payment
+     * - status
+     * - report
+     * - update-status
      */
     public function using(string $endpoint): self
     {
+        // if endpoint not found
+        if (! array_key_exists($endpoint, $this->endpoints)) {
+            throw new \Exception('Endpoint not found');
+        }
+
         $this->using = $endpoint;
         $this->endpoint = $this->endpoints[$endpoint];
 
@@ -97,6 +118,11 @@ class VirtualAccount
         // endpoint must be set
         if (is_null($this->endpoint)) {
             throw new \Exception('Endpoint has not been set. Please use `using` method to set endpoint');
+        }
+
+        // body must be set
+        if (empty($this->body)) {
+            throw new \Exception('Body has not been set. Please use `withBody` method to set body');
         }
 
         // method
