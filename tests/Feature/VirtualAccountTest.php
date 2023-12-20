@@ -8,6 +8,7 @@ use LensaWicara\SnapBI\Services\Payload\VirtualAccount\CreateVAPayload;
 use LensaWicara\SnapBI\Services\Payload\VirtualAccount\InquiryPayload;
 use LensaWicara\SnapBI\Services\Payload\VirtualAccount\InquiryVAPayload;
 use LensaWicara\SnapBI\Services\Payload\VirtualAccount\PaymentPayload;
+use LensaWicara\SnapBI\Services\Payload\VirtualAccount\ReportPayload;
 use LensaWicara\SnapBI\Services\VirtualAccount;
 use LensaWicara\Tests\TestCase;
 use PHPUnit\Framework\Attributes\Test;
@@ -278,86 +279,16 @@ class VirtualAccountTest extends TestCase
     // can get virtual account report
     public function test_can_get_virtual_account_report()
     {
-        $body = [
-            'partnerServiceId' => '088899',
-            'startDate' => '2020-12-31',
-            'startTime' => '14:56:11+07:00',
-            'endDate' => '2021-12-31',
-            'endTime' => '14:56:11+07:00',
-            'additionalInfo' => [],
-        ];
+        $body = new ReportPayload(
+            partnerServiceId: '088899',
+            startDate: '2020-12-31',
+            startTime: '14:56:11+07:00',
+            endDate: '2021-12-31',
+            endTime: '14:56:11+07:00',
+            additionalInfo: [],
+        );
 
-        $va = new VirtualAccount;
-
-        $response = $va->using('report')->withBody($body)->send();
-
-        // $response = [
-        //     "responseCode" => "2003500",
-        //     "responseMessage" => "Successful",
-        //     "virtualAccountdata" => [
-        //         [
-        //             "paymentFlagReason" => [
-        //                 "english" => "Success",
-        //                 "indonesia" => "Sukses"
-        //             ],
-        //             "partnerServiceId" => "088899",
-        //             "customerNo" => "1234567890123456789",
-        //             "virtualAccountNo" => "0008889912345678901234567890",
-        //             "virtualAccountName" => "Jokul Doe",
-        //             "virtualAccountEmail" => "john@email.com",
-        //             "virtualAccountPhone" => "6281828384858",
-        //             "sourceAccountNo" => "1234567890",
-        //             "sourceAccountType" => "s",
-        //             "trxId" => "abcdefgh1234",
-        //             "inquiryRequestId" => "abcdef-123456-abcdef",
-        //             "paymentRequestId" => "abcdef-123456-abcdef",
-        //             "paidAmount" => [
-        //                 "value" => "55000",
-        //                 "currency" => "IDR"
-        //             ],
-        //             "paidBills" => "100101",
-        //             "totalAmount" => [
-        //                 "value" => "88000",
-        //                 "currency" => "IDR"
-        //             ],
-        //             "trxDateTime" => "20201231T235959Z",
-        //             "referenceNo" => "123456789012345",
-        //             "journalNum" => "123456",
-        //             "paymentType" => "1",
-        //             "flagAdvise" => "Y",
-        //             "billDetails" => [
-        //                 [
-        //                     "billCode" => "01",
-        //                     "billNo" => "123456789012345678",
-        //                     "billName" => "Bill A for Jan",
-        //                     "billShortName" => "Bill A",
-        //                     "billDescription" => [
-        //                         "english" => "Maintenance",
-        //                         "indonesia" => "Pemeliharaan"
-        //                     ],
-        //                     "billSubCompany" => "00001",
-        //                     "billAmount" => [
-        //                         "value" => "50000",
-        //                         "currency" => "IDR"
-        //                     ],
-        //                     "additionalInfo" => [],
-        //                     "status" => "00",
-        //                     "reason" => [
-        //                         "english" => "Success",
-        //                         "indonesia" => "Sukses"
-        //                     ]
-        //                 ]
-        //             ],
-        //             "freeTexts" => [
-        //                 [
-        //                     "english" => "Free text",
-        //                     "indonesia" => "Tulisan bebas"
-        //                 ]
-        //             ],
-        //             "additionalInfo" => []
-        //         ]
-        //     ]
-        // ];
+        $response = Snap::virtualAccount()->using('report')->withBody($body)->send();
 
         $this->assertIsArray($response);
         $this->assertArrayHasKey('responseCode', $response);
