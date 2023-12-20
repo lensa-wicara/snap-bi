@@ -68,8 +68,12 @@ class VirtualAccount implements TransferCreditVirtualAccount
     /**
      * withBody
      */
-    public function withBody(array $body): self
+    public function withBody(array|object $body): self
     {
+        if (is_object($body)) {
+            $body = (array) $body->toArray();
+        }
+
         $this->body = $body;
 
         return $this;

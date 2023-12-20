@@ -4,6 +4,7 @@ namespace LensaWicara\SnapBI\Services\Payload\VirtualAccount;
 
 use Illuminate\Contracts\Support\Arrayable;
 use LensaWicara\SnapBI\Services\Payload\Amount;
+use ReflectionClass;
 
 // make a payload class for virtual account
 // using below array
@@ -61,6 +62,24 @@ class CreateVAPayload implements Arrayable
     public array $payload = [];
 
     // create new instance
+    /**
+     * CreateVAPayload constructor.
+     *
+     * @param  string  $partnerServiceId The partner service ID.
+     * @param  string  $customerNo The customer number.
+     * @param  string  $virtualAccountNo The virtual account number.
+     * @param  string  $virtualAccountName The virtual account name.
+     * @param  string  $virtualAccountEmail The virtual account email.
+     * @param  string  $virtualAccountPhone The virtual account phone.
+     * @param  string  $trxId The transaction ID.
+     * @param  array{value: string, currency: string}|object|\LensaWicara\SnapBI\Services\Payload\Amount  $totalAmount The total amount.
+     * @param  array{billCode: string, billNo: string, billName: string, billShortName: string, billDescription: array{english: string, indonesia: string}, billSubCompany: string, billAmount: array{value: string, currency: string}, additionalInfo: array}[]  $billDetails The bill details.
+     * @param  array{english: string, indonesia: string}[]  $freeTexts The free texts.
+     * @param  string  $virtualAccountTrxType The virtual account transaction type.
+     * @param  array{value: string, currency: string}|object|\LensaWicara\SnapBI\Services\Payload\Amount  $feeAmount The fee amount.
+     * @param  string  $expiredDate The expiration date.
+     * @param  array{deviceId: string, channel: string}  $additionalInfo The additional information.
+     */
     public function __construct(
         public string $partnerServiceId,
         public string $customerNo,
@@ -69,30 +88,35 @@ class CreateVAPayload implements Arrayable
         public string $virtualAccountEmail,
         public string $virtualAccountPhone,
         public string $trxId,
-        public Amount $totalAmount,
+        public array|Amount $totalAmount,
         public array $billDetails,
         public array $freeTexts,
         public string $virtualAccountTrxType,
-        public Amount $feeAmount,
+        public array|Amount $feeAmount,
         public string $expiredDate,
         public array $additionalInfo
     ) {
-        $this->payload = [
-            'partnerServiceId' => $partnerServiceId,
-            'customerNo' => $customerNo,
-            'virtualAccountNo' => $virtualAccountNo,
-            'virtualAccountName' => $virtualAccountName,
-            'virtualAccountEmail' => $virtualAccountEmail,
-            'virtualAccountPhone' => $virtualAccountPhone,
-            'trxId' => $trxId,
-            'totalAmount' => $totalAmount->toArray(),
-            'billDetails' => $billDetails,
-            'freeTexts' => $freeTexts,
-            'virtualAccountTrxType' => $virtualAccountTrxType,
-            'feeAmount' => $feeAmount->toArray(),
-            'expiredDate' => $expiredDate,
-            'additionalInfo' => $additionalInfo,
-        ];
+        $this->boot();
+    }
+
+    public function boot(): void
+    {
+        // make all of the properties value to be array (some of them are multi level array)
+        // if there an object in the properties value then convert it to array
+        $properties = (new ReflectionClass($this))->getProperties();
+
+        foreach ($properties as $property) {
+            $property->setAccessible(true);
+
+            $value = $property->getValue($this);
+
+            if (is_object($value)) {
+                $property->setValue($this, $value->toArray());
+            }
+        }
+
+        // set payload
+        $this->payload = get_object_vars($this);
     }
 
     // get payload

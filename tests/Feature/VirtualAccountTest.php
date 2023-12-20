@@ -45,65 +45,6 @@ class VirtualAccountTest extends TestCase
 
         $response = $va->using('inquiry')->withBody($body)->send();
 
-        // $responseData = [
-        //     "responseCode" => "2002400",
-        //     "responseMessage" => "Successful",
-        //     "virtualAccountData" => [
-        //         "inquiryStatus" => "00",
-        //         "inquiryReason" => [
-        //             "english" => "Success",
-        //             "indonesia" => "Sukses"
-        //         ],
-        //         "partnerServiceId" => "88899",
-        //         "customerNo" => "12345678901234567890",
-        //         "virtualAccountNo" => "08889912345678901234567890",
-        //         "virtualAccountName" => "Jokul Doe",
-        //         "virtualAccountEmail" => "john@email.com",
-        //         "virtualAccountPhone" => "6281828384858",
-        //         "inquiryRequestId" => "abcdef-123456-abcdef",
-        //         "totalAmount" => [
-        //             "value" => "12345678.00",
-        //             "currency" => "IDR"
-        //         ],
-        //         "subCompany" => "abcdefgh1234",
-        //         "billDetails" => [
-        //             [
-        //                 "billCode" => "01",
-        //                 "billNo" => "123456789012345678",
-        //                 "billName" => "Bill A for Jan",
-        //                 "billShortName" => "Bill A",
-        //                 "billDescription" => [
-        //                     "english" => "Maintenance",
-        //                     "indonesia" => "Pemeliharaan"
-        //                 ],
-        //                 "billSubCompany" => "00001",
-        //                 "billAmount" => [
-        //                     "value" => "50000",
-        //                     "currency" => "IDR"
-        //                 ],
-        //                 "billAmountLabel" => "Total Tagihan",
-        //                 "billAmountValue" => "Rp. 50.000,-",
-        //                 "additionalInfo" => []
-        //             ]
-        //         ],
-        //         "freeTexts" => [
-        //             [
-        //                 "english" => "Free text",
-        //                 "indonesia" => "Tulisan bebas"
-        //             ]
-        //         ],
-        //         "virtualAccountTrxType" => "1",
-        //         "feeAmount" => [
-        //             "value" => "5000",
-        //             "currency" => "IDR"
-        //         ],
-        //         "additionalInfo" => [
-        //             "deviceId" => "12345679237",
-        //             "channel" => "mobilephone"
-        //         ]
-        //     ]
-        // ];
-
         $this->assertIsArray($response);
         $this->assertArrayHasKey('responseCode', $response);
         $this->assertArrayHasKey('responseMessage', $response);
@@ -124,27 +65,26 @@ class VirtualAccountTest extends TestCase
         $this->assertArrayHasKey('virtualAccountTrxType', $response['virtualAccountData']);
         $this->assertArrayHasKey('feeAmount', $response['virtualAccountData']);
         $this->assertArrayHasKey('additionalInfo', $response['virtualAccountData']);
-
-        $this->assertTrue(true);
     }
 
     #[Test]
     // can create VA
     public function test_can_create_va()
     {
-        $payload = [
-            'partnerServiceId' => '088899',
-            'customerNo' => '12345678901234567890',
-            'virtualAccountNo' => '08889912345678901234567890',
-            'virtualAccountName' => 'Jokul Doe',
-            'virtualAccountEmail' => 'jokul@email.com',
-            'virtualAccountPhone' => '6281828384858',
-            'trxId' => 'abcdefgh1234',
-            'totalAmount' => [
-                'value' => '12345678.00',
-                'currency' => 'IDR',
-            ],
-            'billDetails' => [
+        // use payload
+        $body = new CreateVAPayload(
+            partnerServiceId: '088899',
+            customerNo: '12345678901234567890',
+            virtualAccountNo: '08889912345678901234567890',
+            virtualAccountName: 'Jokul Doe',
+            virtualAccountEmail: 'jokul@email.com',
+            virtualAccountPhone: '6281828384858',
+            trxId: 'abcdefgh1234',
+            totalAmount: new Amount(
+                amount: '12345678.00',
+                currency: 'IDR',
+            ),
+            billDetails: [
                 [
                     'billCode' => '01',
                     'billNo' => '123456789012345678',
@@ -155,107 +95,35 @@ class VirtualAccountTest extends TestCase
                         'indonesia' => 'Pemeliharaan',
                     ],
                     'billSubCompany' => '00001',
-                    'billAmount' => [
-                        'value' => '12345678.00',
-                        'currency' => 'IDR',
-                    ],
+                    'billAmount' => (new Amount(
+                        amount: '12345678.00',
+                        currency: 'IDR',
+                    ))->toArray(),
+                    // 'billAmount' => [
+                    //     'value' => '12345678.00',
+                    //     'currency' => 'IDR',
+                    // ],
                     'additionalInfo' => [],
                 ],
             ],
-            'freeTexts' => [
+            freeTexts: [
                 [
                     'english' => 'Free text',
                     'indonesia' => 'Tulisan bebas',
                 ],
             ],
-            'virtualAccountTrxType' => '1',
-            'feeAmount' => [
-                'value' => '12345678.00',
-                'currency' => 'IDR',
-            ],
-            'expiredDate' => '2020-12-31T23:59:59-07:00',
-            'additionalInfo' => [
-                'deviceId' => '12345679237',
-                'channel' => 'mobilephone',
-            ],
-        ];
-
-        $body = new CreateVAPayload(
-            partnerServiceId: $payload['partnerServiceId'],
-            customerNo: $payload['customerNo'],
-            virtualAccountNo: $payload['virtualAccountNo'],
-            virtualAccountName: $payload['virtualAccountName'],
-            virtualAccountEmail: $payload['virtualAccountEmail'],
-            virtualAccountPhone: $payload['virtualAccountPhone'],
-            trxId: $payload['trxId'],
-            totalAmount: new Amount(
-                amount: $payload['totalAmount']['value'],
-                currency: $payload['totalAmount']['currency'],
-            ),
-            billDetails: $payload['billDetails'],
-            freeTexts: $payload['freeTexts'],
-            virtualAccountTrxType: $payload['virtualAccountTrxType'],
+            virtualAccountTrxType: '1',
             feeAmount: new Amount(
-                amount: $payload['feeAmount']['value'],
-                currency: $payload['feeAmount']['currency']
+                amount: '12345678.00',
+                currency: 'IDR',
             ),
-            expiredDate: $payload['expiredDate'],
-            additionalInfo: $payload['additionalInfo'],
+            expiredDate: '2020-12-31T23:59:59-07:00',
+            additionalInfo: [
+
+            ],
         );
 
-        $response = Snap::virtualAccount()->using('create-va')->withBody($body->toArray())->send();
-
-        // $responseData = [
-        //     "responseCode" => "2002700",
-        //     "responseMessage" => "Successful",
-        //     "virtualAccountData" => [
-        //         "partnerServiceId" => "088899",
-        //         "customerNo" => "12345678901234567890",
-        //         "virtualAccountNo" => "08889912345678901234567890",
-        //         "virtualAccountName" => "Jokul Doe",
-        //         "virtualAccountEmail" => "jokul@email.com",
-        //         "virtualAccountPhone" => "6281828384858",
-        //         "trxId" => "abcdefgh1234",
-        //         "totalAmount" => [
-        //             "value" => "12345678.00",
-        //             "currency" => "IDR"
-        //         ],
-        //         "billDetails" => [
-        //             [
-        //                 "billCode" => "01",
-        //                 "billNo" => "123456789012345678",
-        //                 "billName" => "Bill A for Jan",
-        //                 "billShortName" => "Bill A",
-        //                 "billDescription" => [
-        //                     "english" => "Maintenance",
-        //                     "indonesia" => "Pemeliharaan"
-        //                 ],
-        //                 "billSubCompany" => "00001",
-        //                 "billAmount" => [
-        //                     "value" => "12345678.00",
-        //                     "currency" => "IDR"
-        //                 ],
-        //                 "additionalInfo" => []
-        //             ]
-        //         ],
-        //         "freeTexts" => [
-        //             [
-        //                 "english" => "Free text",
-        //                 "indonesia" => "Tulisan bebas"
-        //             ]
-        //         ],
-        //         "virtualAccountTrxType" => "1",
-        //         "feeAmount" => [
-        //             "value" => "12345678.00",
-        //             "currency" => "IDR"
-        //         ],
-        //         "expiredDate" => "2024-01-13T12:04:20+07:00",
-        //         "additionalInfo" => [
-        //             "deviceId" => "12345679237",
-        //             "channel" => "mobilephone"
-        //         ]
-        //     ]
-        // ];
+        $response = Snap::virtualAccount()->using('create-va')->withBody($body)->send();
 
         $this->assertIsArray($response);
         $this->assertArrayHasKey('responseCode', $response);
